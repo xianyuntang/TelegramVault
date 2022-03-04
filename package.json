@@ -68,7 +68,9 @@
     "cross-env": "^7.0.3",
     "electron": "^17.1.0",
     "electron-builder": "^22.14.13",
+    "input": "^1.0.1",
     "prettier": "^2.5.1",
+    "telegram": "^2.5.2",
     "wait-on": "^6.0.1"
   }
 }
