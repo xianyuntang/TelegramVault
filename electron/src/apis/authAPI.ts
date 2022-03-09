@@ -1,5 +1,5 @@
 import client, { apiCredentials } from "./telegramAPI";
-import { ISignInRequestData } from "../../../src/shared/gramjs";
+import { ISignInRequestData } from "../../../src/shared/interface/gramjs/auth";
 
 const { Api } = require("telegram");
 

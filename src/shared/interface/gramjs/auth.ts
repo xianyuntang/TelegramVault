@@ -19,3 +19,4 @@ export interface ISignInResponseData {
   username: string;
   phone: string;
 }
+

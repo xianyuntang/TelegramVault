@@ -3,9 +3,10 @@ import * as path from "path";
 import installExtension, {
   REACT_DEVELOPER_TOOLS,
 } from "electron-devtools-installer";
-import { IIpcChannel } from "../src/shared/ipc/interface";
-import { sendCodeChannel, signInChannel } from "./ipc/telegram";
+import { IIpcChannel } from "../src/shared/interface/ipc";
+import { sendCodeChannel, signInChannel } from "./ipc/auth";
 import { connectTelegramClient } from "./src/apis/telegramAPI";
+import { saveFilePartChannel } from "./ipc/file";
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -57,7 +58,7 @@ app.whenReady().then(async () => {
   } else {
     await connectTelegramClient("development");
   }
-  registerIpcChannels([sendCodeChannel, signInChannel]);
+  registerIpcChannels([sendCodeChannel, signInChannel, saveFilePartChannel]);
 
   // DevTools
   installExtension(REACT_DEVELOPER_TOOLS)

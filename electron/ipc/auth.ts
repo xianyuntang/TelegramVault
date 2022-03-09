@@ -1,12 +1,12 @@
-import { IIpcChannel, IIpcRequest, IpcChannel } from "../../src/shared/ipc/interface";
+import { IIpcChannel, IIpcRequest, IpcChannel } from "../../src/shared/interface/ipc";
 import { IpcMainEvent } from "electron";
-import { signIn } from "../src/apis/loginAPI";
+import { signIn } from "../src/apis/authAPI";
 
 import {
   ISendCodeRequestData,
   ISignInRequestData,
-} from "../../src/shared/gramjs";
-import { sendCode } from "../src/apis/loginAPI";
+} from "../../src/shared/interface/gramjs/auth";
+import { sendCode } from "../src/apis/authAPI";
 import client from "../src/apis/telegramAPI";
 
 

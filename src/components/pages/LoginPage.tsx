@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Paper, Box, TextField, Button, Grid, Typography } from "@mui/material";
 import { IpcService } from "../../ipc";
-import { IpcChannel } from "../../shared/ipc/interface";
+import { IpcChannel } from "../../shared/interface/ipc";
 import {
   ISendCodeRequestData,
   ISendCodeResponseData,
   ISignInRequestData,
-} from "../../shared/gramjs";
+} from "../../shared/interface/gramjs/auth";
 import { useForm, Controller } from "react-hook-form";
 import styled from "@emotion/styled";
 import { useNavigate } from "react-router-dom";

@@ -14,4 +14,5 @@ export interface IIpcRequest {
 export enum IpcChannel {
   SEND_CODE = "send-code",
   SIGN_IN = "sign-in",
+  SAVE_FILE_PART = "save-file-part"
 }
