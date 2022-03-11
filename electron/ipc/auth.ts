@@ -5,17 +5,12 @@ import {
   TelegramAuthAction,
 } from "../../src/shared/interface/ipc";
 import { IpcMainEvent } from "electron";
-import {
-  getPassword,
-  passwordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPow,
-  sendCode,
-  signIn,
-} from "../src/apis/authAPI";
+import { sendCode, signIn, signInWithPassword } from "../src/apis/authAPI";
 
 import {
-  IPasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPowRequestData,
   ISendCodeRequestData,
   ISignInRequestData,
+  ISignInWithPasswordRequestData,
 } from "../../src/shared/interface/gramjs/auth";
 import client from "../src/apis/telegramAPI";
 
@@ -27,6 +22,15 @@ export const telegramAuthChannel: IIpcChannel = {
     }
 
     switch (request.action) {
+      case TelegramAuthAction.CHECK_AUTH: {
+        (async () => {
+          event.sender.send(
+            request.responseChannel as string,
+            await client.checkAuthorization()
+          );
+        })();
+        break;
+      }
       case TelegramAuthAction.SEND_CODE: {
         (async () => {
           const result = await sendCode(
@@ -39,27 +43,21 @@ export const telegramAuthChannel: IIpcChannel = {
       case TelegramAuthAction.SIGN_IN: {
         (async () => {
           const result = await signIn(request.data as ISignInRequestData);
-          event.sender.send(request.responseChannel as string, result);
-          client.session.save();
-        })();
-        break;
-      }
-      case TelegramAuthAction.GET_PASSWORD: {
-        (async () => {
-          const result = await getPassword();
-          event.sender.send(request.responseChannel as string, result);
-          client.session.save();
-        })();
-        break;
-      }
-      case TelegramAuthAction.GET_SPR: {
-        (async () => {
-          const result =
-            await passwordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPow(
-              request.data as IPasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPowRequestData
-            );
           console.log(result);
+          event.sender.send(request.responseChannel as string, result);
+          client.session.save();
         })();
+        break;
+      }
+      case TelegramAuthAction.SIGN_IN_WITH_PASSWORD: {
+        (async () => {
+          const result = await signInWithPassword(
+            request.data as ISignInWithPasswordRequestData
+          );
+          event.sender.send(request.responseChannel as string, result);
+          client.session.save();
+        })();
+        break;
       }
     }
   },

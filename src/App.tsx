@@ -2,14 +2,18 @@ import React from "react";
 import "./App.css";
 import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 import { RootRouter } from "./router";
+import { Provider } from "react-redux";
+import store from "./store";
 
 function App() {
   const theme = createTheme();
   return (
     <>
-      <ThemeProvider theme={theme}>
-        <RootRouter />
-      </ThemeProvider>
+      <Provider store={store}>
+        <ThemeProvider theme={theme}>
+          <RootRouter />
+        </ThemeProvider>
+      </Provider>
     </>
   );
 }

@@ -6,28 +6,28 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 On the top of it, the following features have been added with realatively small changes:
 
 * TypeScript supports for Electron main process source code
-* Hot-relaod support for Electron app
+* Hot-relaod support for Electron auth
 * Electron Bulder support
 
 ## Available Scripts in addition to the existing ones
 
 ### `npm run electron:dev`
 
-Runs the Electron app in the development mode.
+Runs the Electron auth in the development mode.
 
-The Electron app will reload if you make edits in the `electron` directory.<br>
+The Electron auth will reload if you make edits in the `electron` directory.<br>
 You will also see any lint errors in the console.
 
 ### `npm run electron:build`
 
-Builds the Electron app package for production to the `dist` folder.
+Builds the Electron auth package for production to the `dist` folder.
 
-Your Electron app is ready to be distributed!
+Your Electron auth is ready to be distributed!
 
 ## Project directory structure
 
 ```bash
-my-app/
+my-auth/
 ├── package.json
 │
 ## render process
@@ -57,8 +57,8 @@ my-app/
 ## distribution packges
 └── dist/
     ├── mac/
-    │   └── my-app.app
-    └── my-app-0.1.0.dmg
+    │   └── my-auth.auth
+    └── my-auth-0.1.0.dmg
 ```
 
 ## Do it yourself from scratch
@@ -66,8 +66,8 @@ my-app/
 ### Generate a React project and install npm dependencies
 
 ```bash
-create-react-app my-app --template typescript
-cd my-app
+create-react-auth my-auth --template typescript
+cd my-auth
 yarn add @types/electron-devtools-installer electron-devtools-installer electron-is-dev electron-reload
 yarn add -D concurrently electron electron-builder wait-on cross-env
 ```
@@ -96,7 +96,7 @@ yarn add -D concurrently electron electron-builder wait-on cross-env
 #### electron/main.ts
 
 ```ts
-import { app, BrowserWindow } from 'electron';
+import { auth, BrowserWindow } from 'electron';
 import * as path from 'path';
 import * as isDev from 'electron-is-dev';
 import installExtension, { REACT_DEVELOPER_TOOLS } from "electron-devtools-installer";
@@ -141,15 +141,15 @@ function createWindow() {
   }
 }
 
-app.on('ready', createWindow);
+auth.on('ready', createWindow);
 
-app.on('window-all-closed', () => {
+auth.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
-    app.quit();
+    auth.quit();
   }
 });
 
-app.on('activate', () => {
+auth.on('activate', () => {
   if (win === null) {
     createWindow();
   }
@@ -161,7 +161,7 @@ app.on('activate', () => {
 #### Add properties for Electron
 
 ```json
-  "homepage": ".", # see https://create-react-app.dev/docs/deployment#serving-the-same-build-from-different-paths
+  "homepage": ".", # see https://create-react-auth.dev/docs/deployment#serving-the-same-build-from-different-paths
   "main": "build/electron/main.js",
 ```
 
@@ -186,15 +186,15 @@ app.on('activate', () => {
 
 ```json
   "scripts": {
-    "postinstall": "electron-builder install-app-deps",
+    "postinstall": "electron-builder install-auth-deps",
     "electron:dev": "concurrently \"cross-env BROWSER=none yarn start\" \"wait-on http://localhost:3000 && tsc -p electron -w\" \"wait-on http://localhost:3000 && tsc -p electron && electron .\"",
     "electron:build": "yarn build && tsc -p electron && electron-builder",
 ```
 
 ## Many thanks to the following articles!
 
-- [⚡️ From React to an Electron app ready for production](https://medium.com/@kitze/%EF%B8%8F-from-react-to-an-electron-app-ready-for-production-a0468ecb1da3)
-- [How to build an Electron app using Create React App and Electron Builder](https://www.codementor.io/randyfindley/how-to-build-an-electron-app-using-create-react-app-and-electron-builder-ss1k0sfer)
+- [⚡️ From React to an Electron auth ready for production](https://medium.com/@kitze/%EF%B8%8F-from-react-to-an-electron-app-ready-for-production-a0468ecb1da3)
+- [How to build an Electron auth using Create React App and Electron Builder](https://www.codementor.io/randyfindley/how-to-build-an-electron-app-using-create-react-app-and-electron-builder-ss1k0sfer)
 - [Application entry file reset to default (react-cra detected and config changed incorrectly)](https://github.com/electron-userland/electron-builder/issues/2030)
 - [Serving the Same Build from Different Paths](https://create-react-app.dev/docs/deployment#serving-the-same-build-from-different-paths)
 

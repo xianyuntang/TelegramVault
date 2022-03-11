@@ -13,11 +13,10 @@ export interface IIpcRequest {
 }
 
 export enum TelegramAuthAction {
-  START = "start",
+  CHECK_AUTH = "check-auth",
   SEND_CODE = "send-code",
   SIGN_IN = "sign-in",
-  GET_PASSWORD = "get-password",
-  GET_SPR = "get-spr",
+  SIGN_IN_WITH_PASSWORD = "sign-in-with-password",
 }
 
 export enum TelegramFileAction {

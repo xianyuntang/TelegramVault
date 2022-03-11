@@ -1,17 +1,28 @@
-import React from "react";
-import { HashRouter, Routes, Route, Outlet, Navigate } from "react-router-dom";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  HashRouter,
+  Routes,
+  Route,
+  Outlet,
+  Navigate,
+  useNavigate,
+} from "react-router-dom";
 import { StyledLoginPage } from "../components/pages/LoginPage";
 import { Layout } from "../components/app/Layout";
 import { HomePage } from "../components/pages/HomePage";
+import { IpcService } from "../ipc";
+import { useSelector } from "react-redux";
+import { stateType } from "../reducer";
 
 interface IRequireAuthProps {
   redirect: string;
 }
 
 const RequireAuth: React.FC<IRequireAuthProps> = ({ redirect }) => {
-  // TODO add login
-  const isAuthenticated = false;
-  return isAuthenticated ? <Outlet /> : <Navigate to={redirect} />;
+  const isAuth = useSelector(
+    (state: stateType) => state.authReducer.auth.isAuth
+  );
+  return isAuth ? <Outlet /> : <Navigate to={redirect} />;
 };
 
 export const RootRouter: React.FC = () => {

@@ -1,10 +1,15 @@
 import client, { apiCredentials } from "./telegramAPI";
 import {
-  IPasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPowRequestData,
   ISignInRequestData,
+  ISignInWithPasswordRequestData,
 } from "../../../src/shared/interface/gramjs/auth";
 
 const { Api } = require("telegram");
+const Password = require("telegram/Password");
+
+export const checkAuthorization = async()=>{
+
+}
 
 export const sendCode = async (phoneNumber: string) => {
   return await client.invoke(
@@ -22,18 +27,17 @@ export const signIn = async (props: ISignInRequestData) => {
   return await client.invoke(new Api.auth.SignIn(props));
 };
 
-export const getPassword = async () => {
-  console.log(123);
-  return await client.invoke(new Api.account.GetPassword({}));
+export const signInWithPassword = async (
+  props: ISignInWithPasswordRequestData
+) => {
+  const passwordSrpResult = await client.invoke(
+    new Api.account.GetPassword({})
+  );
+  const passwordSrpCheck = await Password.computeCheck(
+    passwordSrpResult,
+    props.password
+  );
+  return await client.invoke(
+    new Api.auth.CheckPassword({ password: passwordSrpCheck })
+  );
 };
-
-export const passwordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPow =
-  async (
-    props: IPasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPowRequestData
-  ) => {
-    const srpGenerator: typeof Api.PasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPow =
-      new Api.PasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPow(
-        props
-      );
-    console.log(srpGenerator);
-  };

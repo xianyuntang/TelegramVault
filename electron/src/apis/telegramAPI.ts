@@ -17,13 +17,13 @@ const client: typeof TelegramClient = new TelegramClient(
   apiCredentials.apiHash
 );
 
-export async function connectTelegramClient(
+export const connectTelegramClient = async (
   type: "production" | "development"
-) {
+) => {
   if (type == "development") {
     // client.session.setDC(2, "149.154.167.40", 443);
   }
   await client.connect();
-}
+};
 
 export default client;

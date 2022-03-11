@@ -1,17 +1,26 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Paper, Box, TextField, Button, Grid, Typography } from "@mui/material";
+import {
+  Paper,
+  Box,
+  TextField,
+  Button,
+  Grid,
+  Typography,
+  Skeleton,
+} from "@mui/material";
 import { IpcService } from "../../ipc";
 import { IpcChannel, TelegramAuthAction } from "../../shared/interface/ipc";
 import {
-  IGetPasswordResponseData,
-  IPasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPowRequestData,
   ISendCodeRequestData,
   ISendCodeResponseData,
   ISignInRequestData,
+  ISignInWithPasswordRequestData,
 } from "../../shared/interface/gramjs/auth";
 import { useForm, Controller } from "react-hook-form";
 import styled from "@emotion/styled";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setIsAuth } from "../../actions/auth";
 
 interface ILoginPage {
   className?: string;
@@ -23,8 +32,10 @@ interface ILoginForm extends ISignInRequestData {
 
 export const LoginPage: React.FC<ILoginPage> = ({ className }) => {
   const ipc = new IpcService();
-  const [step, setStep] = useState<number>(3);
+  const [step, setStep] = useState<number>(1);
+  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { control, getValues, setValue } = useForm<ILoginForm>({
     defaultValues: {
       phoneNumber: "",
@@ -34,6 +45,19 @@ export const LoginPage: React.FC<ILoginPage> = ({ className }) => {
     },
   });
 
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      const checkAuthResponseData: boolean = await ipc.send(
+        IpcChannel.TELEGRAM_AUTH,
+        TelegramAuthAction.CHECK_AUTH
+      );
+      dispatch(setIsAuth(checkAuthResponseData));
+      navigate("/");
+      setLoading(false);
+    })();
+  }, []);
+
   const sendCode = async () => {
     const sendCodeResponseData: ISendCodeResponseData = await ipc.send(
       IpcChannel.TELEGRAM_AUTH,
@@ -42,7 +66,6 @@ export const LoginPage: React.FC<ILoginPage> = ({ className }) => {
         data: { phoneNumber: getValues("phoneNumber") } as ISendCodeRequestData,
       }
     );
-    console.log(sendCodeResponseData);
     setValue("phoneCodeHash", sendCodeResponseData.phoneCodeHash);
     setStep(step + 1);
   };
@@ -58,22 +81,19 @@ export const LoginPage: React.FC<ILoginPage> = ({ className }) => {
     );
 
     console.log(signInResponseData);
+    console.log(JSON.stringify(signInResponseData));
   };
 
-  const getPassword = async () => {
-    console.log(123);
-    const getPasswordResponseData: IGetPasswordResponseData = await ipc.send(
+  const signInWithPassword = async () => {
+    const signInWithPasswordResponseData = await ipc.send(
       IpcChannel.TELEGRAM_AUTH,
-      TelegramAuthAction.GET_PASSWORD
+      TelegramAuthAction.SIGN_IN_WITH_PASSWORD,
+      {
+        data: { password: "" } as ISignInWithPasswordRequestData,
+      }
     );
-    console.log(getPasswordResponseData);
-    const IPasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPowRequestData =
-      await ipc.send(IpcChannel.TELEGRAM_AUTH, TelegramAuthAction.GET_SPR, {
-        data: getPasswordResponseData.newAlgo as IPasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPowRequestData,
-      });
-    console.log(
-      IPasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPowRequestData
-    );
+    console.log(signInWithPasswordResponseData);
+    console.log(JSON.stringify(signInWithPasswordResponseData));
   };
 
   return (
@@ -88,85 +108,89 @@ export const LoginPage: React.FC<ILoginPage> = ({ className }) => {
         elevation={1}
         square
       >
-        <Box className="login-page__paper">
-          <Typography component="h1" variant="h5">
-            Login
-          </Typography>
-          <Box component="form" className="login-page__form">
-            {step == 1 && (
-              <>
-                <Box className="login-page__form-item">
-                  <Controller
-                    control={control}
-                    name="phoneNumber"
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        label="Phone Number"
-                        variant="outlined"
-                        required
-                        fullWidth
-                      />
-                    )}
-                  />
-                </Box>
-                <Box className="login-page__form-item">
-                  <Button onClick={sendCode} variant="outlined">
-                    Send SMS Code
-                  </Button>
-                </Box>
-              </>
-            )}
-            {step == 2 && (
-              <>
-                <Box className="login-page__form-item">
-                  <Controller
-                    control={control}
-                    name="phoneCode"
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        label="Phone Code"
-                        variant="outlined"
-                        required
-                        fullWidth
-                      />
-                    )}
-                  />
-                </Box>
-                <Box className="login-page__form-item">
-                  <Button onClick={signIn} variant="outlined">
-                    Sign In
-                  </Button>
-                </Box>
-              </>
-            )}
-            {step == 3 && (
-              <>
-                <Box className="login-page__form-item">
-                  <Controller
-                    control={control}
-                    name="password"
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        label="Password"
-                        variant="outlined"
-                        required
-                        fullWidth
-                      />
-                    )}
-                  />
-                </Box>
-                <Box className="login-page__form-item">
-                  <Button onClick={getPassword} variant="outlined">
-                    Sign In
-                  </Button>
-                </Box>
-              </>
-            )}
+        {loading ? (
+          <Skeleton className="login-page__skeleton" />
+        ) : (
+          <Box className="login-page__paper">
+            <Typography component="h1" variant="h5">
+              Login
+            </Typography>
+            <Box component="form" className="login-page__form">
+              {step == 1 && (
+                <>
+                  <Box className="login-page__form-item">
+                    <Controller
+                      control={control}
+                      name="phoneNumber"
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          label="Phone Number"
+                          variant="outlined"
+                          required
+                          fullWidth
+                        />
+                      )}
+                    />
+                  </Box>
+                  <Box className="login-page__form-item">
+                    <Button onClick={sendCode} variant="outlined">
+                      Send SMS Code
+                    </Button>
+                  </Box>
+                </>
+              )}
+              {step == 2 && (
+                <>
+                  <Box className="login-page__form-item">
+                    <Controller
+                      control={control}
+                      name="phoneCode"
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          label="Phone Code"
+                          variant="outlined"
+                          required
+                          fullWidth
+                        />
+                      )}
+                    />
+                  </Box>
+                  <Box className="login-page__form-item">
+                    <Button onClick={signIn} variant="outlined">
+                      Sign In
+                    </Button>
+                  </Box>
+                </>
+              )}
+              {step == 3 && (
+                <>
+                  <Box className="login-page__form-item">
+                    <Controller
+                      control={control}
+                      name="password"
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          label="Password"
+                          variant="outlined"
+                          required
+                          fullWidth
+                        />
+                      )}
+                    />
+                  </Box>
+                  <Box className="login-page__form-item">
+                    <Button onClick={signInWithPassword} variant="outlined">
+                      Sign In
+                    </Button>
+                  </Box>
+                </>
+              )}
+            </Box>
           </Box>
-        </Box>
+        )}
       </Grid>
     </>
   );
@@ -177,7 +201,10 @@ export const StyledLoginPage = styled(LoginPage)`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
+  .login-page__skeleton{
+    width: 100%;
+    height: 100%;
+  }
   .login-page__paper {
     margin: 12px 6px;
     display: flex;
