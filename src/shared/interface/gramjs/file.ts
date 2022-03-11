@@ -5,3 +5,8 @@ export interface ISaveFilePartRequestData {
 }
 
 export type ISaveFilePartResponseData = boolean;
+
+
+export interface IInputFileRequestData{
+
+}

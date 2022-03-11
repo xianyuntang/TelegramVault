@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Paper, Box, TextField, Button, Grid, Typography } from "@mui/material";
 import { IpcService } from "../../ipc";
-import { IpcChannel } from "../../shared/interface/ipc";
+import { IpcChannel, TelegramAuthAction } from "../../shared/interface/ipc";
 import {
+  IGetPasswordResponseData,
+  IPasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPowRequestData,
   ISendCodeRequestData,
   ISendCodeResponseData,
   ISignInRequestData,
@@ -15,20 +17,27 @@ interface ILoginPage {
   className?: string;
 }
 
+interface ILoginForm extends ISignInRequestData {
+  password?: "";
+}
+
 export const LoginPage: React.FC<ILoginPage> = ({ className }) => {
   const ipc = new IpcService();
-  const [step, setStep] = useState<number>(1);
+  const [step, setStep] = useState<number>(3);
   const navigate = useNavigate();
-  const { control, getValues, setValue } = useForm<ISignInRequestData>({
+  const { control, getValues, setValue } = useForm<ILoginForm>({
     defaultValues: {
-      phoneNumber: "9996621479",
+      phoneNumber: "",
       phoneCodeHash: "",
       phoneCode: "",
+      password: "",
     },
   });
+
   const sendCode = async () => {
     const sendCodeResponseData: ISendCodeResponseData = await ipc.send(
-      IpcChannel.SEND_CODE,
+      IpcChannel.TELEGRAM_AUTH,
+      TelegramAuthAction.SEND_CODE,
       {
         data: { phoneNumber: getValues("phoneNumber") } as ISendCodeRequestData,
       }
@@ -38,10 +47,33 @@ export const LoginPage: React.FC<ILoginPage> = ({ className }) => {
     setStep(step + 1);
   };
 
-  const SignIn = async () => {
-    const signInResponseData = await ipc.send(IpcChannel.SIGN_IN, {
-      data: getValues(),
-    });
+  const signIn = async () => {
+    setStep(step + 1);
+    const signInResponseData = await ipc.send(
+      IpcChannel.TELEGRAM_AUTH,
+      TelegramAuthAction.SIGN_IN,
+      {
+        data: getValues(),
+      }
+    );
+
+    console.log(signInResponseData);
+  };
+
+  const getPassword = async () => {
+    console.log(123);
+    const getPasswordResponseData: IGetPasswordResponseData = await ipc.send(
+      IpcChannel.TELEGRAM_AUTH,
+      TelegramAuthAction.GET_PASSWORD
+    );
+    console.log(getPasswordResponseData);
+    const IPasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPowRequestData =
+      await ipc.send(IpcChannel.TELEGRAM_AUTH, TelegramAuthAction.GET_SPR, {
+        data: getPasswordResponseData.newAlgo as IPasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPowRequestData,
+      });
+    console.log(
+      IPasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPowRequestData
+    );
   };
 
   return (
@@ -103,7 +135,31 @@ export const LoginPage: React.FC<ILoginPage> = ({ className }) => {
                   />
                 </Box>
                 <Box className="login-page__form-item">
-                  <Button onClick={SignIn} variant="outlined">
+                  <Button onClick={signIn} variant="outlined">
+                    Sign In
+                  </Button>
+                </Box>
+              </>
+            )}
+            {step == 3 && (
+              <>
+                <Box className="login-page__form-item">
+                  <Controller
+                    control={control}
+                    name="password"
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label="Password"
+                        variant="outlined"
+                        required
+                        fullWidth
+                      />
+                    )}
+                  />
+                </Box>
+                <Box className="login-page__form-item">
+                  <Button onClick={getPassword} variant="outlined">
                     Sign In
                   </Button>
                 </Box>

@@ -11,9 +11,7 @@ export const apiCredentials: IApiCredentials = {
   apiHash: process.env.APIHASH || "",
 };
 
-// @ts-ignore
-
-const client: TelegramClient = new TelegramClient(
+const client: typeof TelegramClient = new TelegramClient(
   new StoreSession("session"),
   apiCredentials.apiId,
   apiCredentials.apiHash
@@ -23,12 +21,9 @@ export async function connectTelegramClient(
   type: "production" | "development"
 ) {
   if (type == "development") {
-    client.session.setDC(2, "149.154.167.40", 443);
+    // client.session.setDC(2, "149.154.167.40", 443);
   }
   await client.connect();
-
 }
-
-
 
 export default client;

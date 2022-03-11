@@ -4,7 +4,7 @@ export const parseFile = (
 ) => {
   let fileSize: number = file.size;
   let filePart: number = 0;
-  let chunkSize: number = 1024;
+  let chunkSize: number = 1024 * 512;
   let offset: number = 0;
 
   const readEventHandler = (evt: ProgressEvent<FileReader>) => {

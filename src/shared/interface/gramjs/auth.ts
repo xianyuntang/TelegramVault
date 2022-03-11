@@ -20,3 +20,14 @@ export interface ISignInResponseData {
   phone: string;
 }
 
+export interface IGetPasswordResponseData {
+  srpId: { value: string };
+  newAlgo: IPasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPowRequestData;
+}
+
+export interface IPasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPowRequestData {
+  salt1: Uint8Array;
+  salt2: Uint8Array;
+  g: number;
+  p: Uint8Array;
+}

@@ -4,9 +4,8 @@ import installExtension, {
   REACT_DEVELOPER_TOOLS,
 } from "electron-devtools-installer";
 import { IIpcChannel } from "../src/shared/interface/ipc";
-import { sendCodeChannel, signInChannel } from "./ipc/auth";
 import { connectTelegramClient } from "./src/apis/telegramAPI";
-import { saveFilePartChannel } from "./ipc/file";
+import { registeredChannel } from "./ipc";
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -58,7 +57,7 @@ app.whenReady().then(async () => {
   } else {
     await connectTelegramClient("development");
   }
-  registerIpcChannels([sendCodeChannel, signInChannel, saveFilePartChannel]);
+  registerIpcChannels(registeredChannel);
 
   // DevTools
   installExtension(REACT_DEVELOPER_TOOLS)

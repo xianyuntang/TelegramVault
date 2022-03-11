@@ -7,12 +7,24 @@ export interface IIpcChannel {
 }
 
 export interface IIpcRequest {
+  action?: string;
   responseChannel?: string;
   data?: object;
 }
 
-export enum IpcChannel {
+export enum TelegramAuthAction {
+  START = "start",
   SEND_CODE = "send-code",
   SIGN_IN = "sign-in",
-  SAVE_FILE_PART = "save-file-part"
+  GET_PASSWORD = "get-password",
+  GET_SPR = "get-spr",
+}
+
+export enum TelegramFileAction {
+  SAVE_FILE_PART = "save-file-part",
+}
+
+export enum IpcChannel {
+  TELEGRAM_AUTH = "telegram-auth",
+  TELEGRAM_FILE = "telegram-file",
 }

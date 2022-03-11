@@ -4,11 +4,17 @@ import { IIpcRequest } from "../shared/interface/ipc";
 export class IpcService {
   private ipcRenderer?: IpcRenderer;
 
-  public send<T>(channel: string, request: IIpcRequest = {}): Promise<T> {
+  public send<T>(
+    channel: string,
+    action: string,
+    request: IIpcRequest = {}
+  ): Promise<T> {
     if (!request.responseChannel) {
       request.responseChannel = `${channel}_response_${new Date().getTime()}`;
     }
-
+    if (!request.action) {
+      request.action = action;
+    }
     if (!this.ipcRenderer) {
       this.initializeIpcRenderer();
     }

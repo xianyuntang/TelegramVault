@@ -10,7 +10,7 @@ interface IRequireAuthProps {
 
 const RequireAuth: React.FC<IRequireAuthProps> = ({ redirect }) => {
   // TODO add login
-  const isAuthenticated = true;
+  const isAuthenticated = false;
   return isAuthenticated ? <Outlet /> : <Navigate to={redirect} />;
 };
 

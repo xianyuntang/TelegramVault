@@ -9,3 +9,7 @@ export const saveFilePart = async (props: ISaveFilePartRequestData) => {
     new Api.upload.SaveFilePart({ ...props, bytes: Buffer.from(props.bytes) })
   );
 };
+
+// export const inputFile = async (props: IInputFileRequestData) => {
+//   return await client.invoke(new Api.inputFile(props));
+// };
