@@ -3,11 +3,11 @@ import {
   IIpcRequest,
   IpcChannel,
   TelegramMessageAction,
-} from "../../src/shared/interface/ipc";
+} from "../../../src/shared/interface/ipc";
 import { IpcMainEvent } from "electron";
-import { sendMediaToMe } from "../src/apis/messageAPI";
-import { ISendMediaToMe } from "../../src/shared/interface/gramjs/auth";
-import { IMessage } from "../../src/shared/interface/gramjs/message";
+import { sendMediaToMe } from "../../src/apis/messageAPI";
+import { ISendMediaToMe } from "../../../src/shared/interface/gramjs/auth";
+import { IMessage } from "../../../src/shared/interface/gramjs/message";
 
 export const telegramMessageChannel: IIpcChannel = {
   getName: () => IpcChannel.TELEGRAM_MESSAGE,

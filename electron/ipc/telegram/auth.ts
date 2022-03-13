@@ -3,16 +3,16 @@ import {
   IIpcRequest,
   IpcChannel,
   TelegramAuthAction,
-} from "../../src/shared/interface/ipc";
+} from "../../../src/shared/interface/ipc";
 import { IpcMainEvent } from "electron";
-import { sendCode, signIn, signInWithPassword } from "../src/apis/authAPI";
+import { sendCode, signIn, signInWithPassword } from "../../src/apis/authAPI";
 
 import {
   ISendCodeRequestData,
   ISignInRequestData,
   ISignInWithPasswordRequestData,
-} from "../../src/shared/interface/gramjs/auth";
-import client from "../src/apis/telegramAPI";
+} from "../../../src/shared/interface/gramjs/auth";
+import client from "../../src/apis/telegramAPI";
 
 export const telegramAuthChannel: IIpcChannel = {
   getName: () => IpcChannel.TELEGRAM_AUTH,
@@ -43,7 +43,6 @@ export const telegramAuthChannel: IIpcChannel = {
       case TelegramAuthAction.SIGN_IN: {
         (async () => {
           const result = await signIn(request.data as ISignInRequestData);
-          console.log(result);
           event.sender.send(request.responseChannel as string, result);
           client.session.save();
         })();

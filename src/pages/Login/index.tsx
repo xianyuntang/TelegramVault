@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Paper,
   Box,
@@ -30,7 +30,7 @@ interface ILoginForm extends ISignInRequestData {
   password?: "";
 }
 
-export const LoginPage: React.FC<ILoginPage> = ({ className }) => {
+export const Index: React.FC<ILoginPage> = ({ className }) => {
   const ipc = new IpcService();
   const [step, setStep] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
@@ -196,15 +196,17 @@ export const LoginPage: React.FC<ILoginPage> = ({ className }) => {
   );
 };
 
-export const StyledLoginPage = styled(LoginPage)`
+export const LoginPage = styled(Index)`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  .login-page__skeleton{
+
+  .login-page__skeleton {
     width: 100%;
     height: 100%;
   }
+
   .login-page__paper {
     margin: 12px 6px;
     display: flex;

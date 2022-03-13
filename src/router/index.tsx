@@ -1,16 +1,8 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  HashRouter,
-  Routes,
-  Route,
-  Outlet,
-  Navigate,
-  useNavigate,
-} from "react-router-dom";
-import { StyledLoginPage } from "../components/pages/LoginPage";
+import React from "react";
+import { HashRouter, Routes, Route, Outlet, Navigate } from "react-router-dom";
+import { LoginPage } from "../pages/Login";
 import { Layout } from "../components/app/Layout";
-import { HomePage } from "../components/pages/HomePage";
-import { IpcService } from "../ipc";
+import { HomePage } from "../pages/Home";
 import { useSelector } from "react-redux";
 import { stateType } from "../reducer";
 
@@ -33,7 +25,7 @@ export const RootRouter: React.FC = () => {
           <Route path="/" element={<RequireAuth redirect="login" />}>
             <Route path="/" element={<HomePage />} />
           </Route>
-          <Route path="/login" element={<StyledLoginPage />} />
+          <Route path="/login" element={<LoginPage />} />
         </Route>
       </Routes>
     </HashRouter>

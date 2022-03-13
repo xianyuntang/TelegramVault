@@ -26,8 +26,13 @@ export enum TelegramMessageAction {
   SEND_MESSAGE_TO_ME = "send-message-to-me",
 }
 
+export enum DatabaseAction {
+  LIST_DIRECTORIES = "list-directories"
+}
+
 export enum IpcChannel {
   TELEGRAM_AUTH = "telegram-auth",
   TELEGRAM_FILE = "telegram-file",
   TELEGRAM_MESSAGE = "telegram-message",
+  DATABASE = "database"
 }

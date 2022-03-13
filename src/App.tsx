@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
+import { createTheme, ThemeProvider } from "@mui/material";
 import { RootRouter } from "./router";
 import { Provider } from "react-redux";
 import store from "./store";

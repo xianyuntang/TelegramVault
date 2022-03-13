@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react";
 import { StyledProps } from "../../shared/interface/component";
-import { Box, Button, Grid, Input, Paper, TextField } from "@mui/material";
-import { useForm } from "react-hook-form";
+import { Box, Button, Grid, Input, Paper } from "@mui/material";
 import { IpcService } from "../../ipc";
 import {
   IpcChannel,
@@ -11,10 +10,11 @@ import {
 import { ISendMediaToMe } from "../../shared/interface/gramjs/auth";
 import { IMessage } from "../../shared/interface/gramjs/message";
 import { IDownloadFileRequestData } from "../../shared/interface/gramjs/file";
+import styled from "@emotion/styled";
+import {DirectoryList} from "./Directory";
 
-export const HomePage: React.FC<StyledProps> = ({ className }) => {
+export const Index: React.FC<StyledProps> = ({ className }) => {
   const ipc = new IpcService();
-  const { control, getValues, setValue } = useForm<ISendMediaToMe>();
   const [files, setFiles] = useState<File[]>([]);
   const [message, setMessage] = useState<IMessage | undefined>(undefined);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -65,11 +65,16 @@ export const HomePage: React.FC<StyledProps> = ({ className }) => {
       elevation={1}
       square
     >
-      <Box component="form" className="home-page__form">
-        <Input onChange={fileOnChange} ref={inputRef} type="file" />
-        <Button onClick={sendMessage}>Submit</Button>
-        <Button onClick={downloadFile}>Download</Button>
-      </Box>
+      {/*<Box component="form" className="home-page__form">*/}
+      {/*  <Input onChange={fileOnChange} ref={inputRef} type="file" />*/}
+      {/*  <Button onClick={sendMessage}>Submit</Button>*/}
+      {/*  <Button onClick={downloadFile}>Download</Button>*/}
+      {/*</Box>*/}
+      <DirectoryList/>
     </Grid>
   );
 };
+
+export const HomePage = styled(Index)`
+
+`;
