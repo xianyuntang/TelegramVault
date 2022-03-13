@@ -1,15 +1,22 @@
 import client from "./telegramAPI";
-
-import { ISaveFilePartRequestData } from "../../../src/shared/interface/gramjs/file";
+import { IMessage } from "../../../src/shared/interface/gramjs/message";
 
 const { Api } = require("telegram");
 
-export const saveFilePart = async (props: ISaveFilePartRequestData) => {
-  return await client.invoke(
-    new Api.upload.SaveFilePart({ ...props, bytes: Buffer.from(props.bytes) })
-  );
+export const downloadFileFromMessage = async (message: IMessage) => {
+  console.log(message.media.document.attributes);
+  return {
+    data: await client.downloadFile(
+      new Api.InputDocumentFileLocation({
+        id: message.media.document.id.value,
+        accessHash: message.media.document.accessHash.value,
+        fileReference: Buffer.from(message.media.document.fileReference),
+        thumbSize: "",
+      }),
+      {
+        dcId: message.media.document.dcId,
+      }
+    ),
+    filename: message.media.document.attributes[0].fileName,
+  };
 };
-
-// export const inputFile = async (props: IInputFileRequestData) => {
-//   return await client.invoke(new Api.inputFile(props));
-// };

@@ -2,7 +2,6 @@ import { IpcMainEvent } from "electron";
 
 export interface IIpcChannel {
   getName(): string;
-
   handle(event: IpcMainEvent, request: IIpcRequest): void;
 }
 
@@ -20,10 +19,15 @@ export enum TelegramAuthAction {
 }
 
 export enum TelegramFileAction {
-  SAVE_FILE_PART = "save-file-part",
+  DOWNLOAD_FILE = "download-file",
+}
+
+export enum TelegramMessageAction {
+  SEND_MESSAGE_TO_ME = "send-message-to-me",
 }
 
 export enum IpcChannel {
   TELEGRAM_AUTH = "telegram-auth",
   TELEGRAM_FILE = "telegram-file",
+  TELEGRAM_MESSAGE = "telegram-message",
 }

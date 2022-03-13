@@ -5,8 +5,11 @@ import {
   TelegramFileAction,
 } from "../../src/shared/interface/ipc";
 import { IpcMainEvent } from "electron";
-import { saveFilePart } from "../src/apis/fileAPI";
-import { ISaveFilePartRequestData } from "../../src/shared/interface/gramjs/file";
+import { downloadFileFromMessage } from "../src/apis/fileAPI";
+import {
+  IDownloadFileRequestData,
+  IDownloadFileResponseData,
+} from "../../src/shared/interface/gramjs/file";
 
 export const telegramFileChannel: IIpcChannel = {
   getName: () => IpcChannel.TELEGRAM_FILE,
@@ -15,12 +18,13 @@ export const telegramFileChannel: IIpcChannel = {
       request.responseChannel = `${this.getName()}_response`;
     }
     switch (request.action) {
-      case TelegramFileAction.SAVE_FILE_PART: {
+      case TelegramFileAction.DOWNLOAD_FILE: {
         (async () => {
-          const result = await saveFilePart(
-            request.data as ISaveFilePartRequestData
-          );
-          event.sender.send(request.responseChannel as string, result);
+          const response: IDownloadFileResponseData =
+            await downloadFileFromMessage(
+              (request.data as IDownloadFileRequestData).message
+            );
+          event.sender.send(request.responseChannel as string, response);
         })();
         break;
       }

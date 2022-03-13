@@ -1,12 +1,17 @@
+import { IMessage } from "./message";
+
 export interface ISaveFilePartRequestData {
   fileId: BigInt;
   filePart: number;
   bytes: string;
 }
 
-export type ISaveFilePartResponseData = boolean;
+export interface Message {}
 
+export interface IDownloadFileRequestData {
+  message: IMessage;
+}
 
-export interface IInputFileRequestData{
-
+export interface IDownloadFileResponseData {
+  data: Buffer;
 }

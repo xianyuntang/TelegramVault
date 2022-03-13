@@ -20,13 +20,14 @@ export interface ISignInResponseData {
   phone: string;
 }
 
-export interface IPasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPowRequestData {
-  salt1: Uint8Array;
-  salt2: Uint8Array;
-  g: number;
-  p: Uint8Array;
-}
-
 export interface ISignInWithPasswordRequestData {
   password: string;
 }
+
+export interface ISendMediaToMe {
+  filename: string;
+  filepath: string;
+  message?: string;
+}
+
+export interface IDownloadFile {}

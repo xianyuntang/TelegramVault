@@ -6,6 +6,7 @@ import installExtension, {
 import { IIpcChannel } from "../src/shared/interface/ipc";
 import { connectTelegramClient } from "./src/apis/telegramAPI";
 import { registeredChannel } from "./ipc";
+import { db, initDB,fetchDatabase } from "./src/db";
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -58,6 +59,9 @@ app.whenReady().then(async () => {
     await connectTelegramClient("development");
   }
   registerIpcChannels(registeredChannel);
+
+  await fetchDatabase()
+
 
   // DevTools
   installExtension(REACT_DEVELOPER_TOOLS)
