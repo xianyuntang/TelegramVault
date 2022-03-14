@@ -8,7 +8,7 @@ const { Api } = require("telegram");
 const Password = require("telegram/Password");
 
 export const checkAuthorization = async()=>{
-
+    return await client.checkAuthorization()
 }
 
 export const sendCode = async (phoneNumber: string) => {

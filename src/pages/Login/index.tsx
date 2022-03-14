@@ -53,7 +53,9 @@ export const Index: React.FC<ILoginPage> = ({ className }) => {
         TelegramAuthAction.CHECK_AUTH
       );
       dispatch(setIsAuth(checkAuthResponseData));
-      navigate("/");
+      if (checkAuthResponseData) {
+        navigate("/");
+      }
       setLoading(false);
     })();
   }, []);
@@ -89,11 +91,14 @@ export const Index: React.FC<ILoginPage> = ({ className }) => {
       IpcChannel.TELEGRAM_AUTH,
       TelegramAuthAction.SIGN_IN_WITH_PASSWORD,
       {
-        data: { password: "" } as ISignInWithPasswordRequestData,
+        data: {
+          password: getValues("password"),
+        } as ISignInWithPasswordRequestData,
       }
     );
-    console.log(signInWithPasswordResponseData);
-    console.log(JSON.stringify(signInWithPasswordResponseData));
+    if (signInWithPasswordResponseData) {
+      navigate("/");
+    }
   };
 
   return (

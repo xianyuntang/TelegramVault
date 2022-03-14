@@ -54,7 +54,6 @@ export const fetchDatabase = async () => {
     filename: tempDbPath,
     driver: sqlite3.Database,
   });
-  console.log(db);
   const message = await getDbMessages();
   if (message.total) {
     const file = await downloadFileFromMessage(message[0]);

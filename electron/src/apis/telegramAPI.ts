@@ -1,3 +1,5 @@
+import {checkAuthorization} from "./authAPI";
+
 const { TelegramClient } = require("telegram");
 const { StoreSession } = require("telegram/sessions");
 
@@ -23,6 +25,7 @@ export const connectTelegramClient = async (
   if (type == "development") {
     // client.session.setDC(2, "149.154.167.40", 443);
   }
+
   await client.connect();
 };
 

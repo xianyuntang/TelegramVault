@@ -4,7 +4,6 @@ import { IMessage } from "../../../src/shared/interface/gramjs/message";
 const { Api } = require("telegram");
 
 export const downloadFileFromMessage = async (message: IMessage) => {
-  console.log(message.media.document.attributes);
   return {
     data: await client.downloadFile(
       new Api.InputDocumentFileLocation({
