@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { StyledProps } from "../../shared/interface/component";
-import { Box, Button, Grid, Input, Paper } from "@mui/material";
+import { Box, Button, Drawer, Grid, Input, Paper } from "@mui/material";
 import { IpcService } from "../../ipc";
 import {
   IpcChannel,
@@ -11,10 +11,11 @@ import { ISendMediaToMe } from "../../shared/interface/gramjs/auth";
 import { IMessage } from "../../shared/interface/gramjs/message";
 import { IDownloadFileRequestData } from "../../shared/interface/gramjs/file";
 import styled from "@emotion/styled";
-import {DirectoryList} from "./Directory";
+import { DirectoryList } from "./Directory";
 
-export const Index: React.FC<StyledProps> = ({ className }) => {
+const BaseHomePage: React.FC<StyledProps> = ({ className }) => {
   const ipc = new IpcService();
+  const [openLeftDrawer, setOpenLeftDrawer] = useState<boolean>(true);
   const [files, setFiles] = useState<File[]>([]);
   const [message, setMessage] = useState<IMessage | undefined>(undefined);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -55,26 +56,26 @@ export const Index: React.FC<StyledProps> = ({ className }) => {
   };
 
   return (
-    <Grid
-      className={className}
-      item
-      xs={8}
-      sm={8}
-      md={5}
-      component={Paper}
-      elevation={1}
-      square
-    >
-      {/*<Box component="form" className="home-page__form">*/}
-      {/*  <Input onChange={fileOnChange} ref={inputRef} type="file" />*/}
-      {/*  <Button onClick={sendMessage}>Submit</Button>*/}
-      {/*  <Button onClick={downloadFile}>Download</Button>*/}
-      {/*</Box>*/}
-      <DirectoryList/>
-    </Grid>
+    <div className={className}>
+      <Drawer
+        className="home-page__drawer"
+        open={openLeftDrawer}
+        variant="persistent"
+        anchor="left"
+      >
+        <DirectoryList />
+      </Drawer>
+    </div>
   );
 };
 
-export const HomePage = styled(Index)`
+export const HomePage = styled(BaseHomePage)`
+  .home-page__drawer {
+    flex-shrink: 0;
 
+    .MuiDrawer-paper {
+      width: 240px;
+      box-sizing: border-box;
+    }
+  }
 `;

@@ -5,13 +5,15 @@ import { IpcService } from "../../ipc";
 import { DatabaseAction, IpcChannel } from "../../shared/interface/ipc";
 import { IDirectories } from "../../shared/interface/db";
 import { Typography } from "@mui/material";
+import styled from "@emotion/styled";
+import { StyledProps } from "../../shared/interface/component";
 
-interface IDirectoryItem {
+interface IDirectoryItem extends StyledProps {
   depth: number;
   item: IDirectories;
 }
 
-export const DirectoryList: React.FC = () => {
+export const BaseDirectoryList: React.FC = () => {
   const ipc = new IpcService();
   const [directories, setDirectories] = useState<IDirectories | null>(null);
   const loadDirectories = async () => {
@@ -28,13 +30,13 @@ export const DirectoryList: React.FC = () => {
     })();
   }, []);
   console.log(directories);
-  return <>{directories && <DirectoryItem depth={0} item={directories} />}</>;
+  return <>{directories && <DirectoryItem depth={1} item={directories} />}</>;
 };
 
-export const DirectoryItem: React.FC<IDirectoryItem> = (props) => {
-  const { depth, item } = props;
+const BaseDirectoryItem: React.FC<IDirectoryItem> = (props) => {
+  const { className, depth, item } = props;
   return (
-    <div>
+    <div className={className}>
       <Typography>{item.name}</Typography>
       {item.children.map((child, index) => (
         <DirectoryItem depth={depth + 1} key={index} item={child} />
@@ -42,3 +44,10 @@ export const DirectoryItem: React.FC<IDirectoryItem> = (props) => {
     </div>
   );
 };
+
+export const DirectoryList = styled(BaseDirectoryList)``;
+
+export const DirectoryItem = styled(BaseDirectoryItem)`
+  padding-left: ${({ depth }) => `${depth}rem`};
+  border: 1px solid antiquewhite;
+`;
