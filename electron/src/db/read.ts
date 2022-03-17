@@ -1,36 +1,29 @@
 import { db } from "./index";
+import { IDirectory } from "../../../src/shared/interface/db";
+import Config from "../../../src/Config";
 
-export const listDirectories = async () => {
-  const directories: Array<any> = await db.all(
-    "SELECT A.id, A.parentId, A.name\n" +
-      "FROM directories A\n" +
-      "WHERE id == 1\n" +
-      "UNION\n" +
-      "SELECT A.id, A.parentId, A.name\n" +
-      "FROM directories A,\n" +
-      "     directories B\n" +
-      "WHERE A.parentId == B.id\n" +
-      "ORDER BY parentId;\n"
-  );
+export const getRootDirectory = async () => {
+  const directories: IDirectory[] = await db.all("SELECT * FROM directories");
+  const rootDirectoryNode = createNewNode(directories[0]);
+  const directoryMapper: { [key: number]: IDirectory } = {};
+  directoryMapper[Config.RootDirectoryId] = rootDirectoryNode;
+  for (let i = 1; i < directories.length; i++) {
+    const newNode: IDirectory = createNewNode(directories[i]);
 
-  function buildList(directories:Array<any>){
-    const root = { ...directories[0], children: [] };
-    function helper(index: number, node: any){
-      if (index >= directories.length) {
-        return;
-      }
-      if (directories[index].parentId == node.id) {
-        node.children.push({ ...directories[index], children: [] });
-      } else {
-        for (let i = 0; i < node.children.length; i++) {
-          helper(index + 1, node.children[i]);
-        }
-      }
-      helper(index + 1, node);
+    if (!(directories[i].parentId in directoryMapper)) {
+      directoryMapper[directories[i].id] = newNode;
+    } else {
+      directoryMapper[directories[i].parentId].children?.push(newNode);
+      directoryMapper[directories[i].id] = newNode;
     }
-    helper(1, root);
-    return root
   }
+  return rootDirectoryNode;
+};
 
-  return buildList(directories)
+const createNewNode = (directory: IDirectory) => {
+  return {
+    ...directory,
+    expand: false,
+    children: [],
+  };
 };

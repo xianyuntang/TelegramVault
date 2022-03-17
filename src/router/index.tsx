@@ -2,7 +2,7 @@ import React from "react";
 import { HashRouter, Routes, Route, Outlet, Navigate } from "react-router-dom";
 import { LoginPage } from "../pages/Login";
 import { Layout } from "../components/app/Layout";
-import { HomePage } from "../pages/Home";
+import { ExplorerPage } from "../pages/Explorer";
 import { useSelector } from "react-redux";
 import { stateType } from "../reducer";
 
@@ -23,7 +23,7 @@ export const RootRouter: React.FC = () => {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route path="/" element={<RequireAuth redirect="login" />}>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<ExplorerPage />} />
           </Route>
           <Route path="/login" element={<LoginPage />} />
         </Route>

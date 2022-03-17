@@ -1,4 +1,4 @@
-import {checkAuthorization} from "./authAPI";
+import Config from "../../../src/Config";
 
 const { TelegramClient } = require("telegram");
 const { StoreSession } = require("telegram/sessions");
@@ -14,7 +14,7 @@ export const apiCredentials: IApiCredentials = {
 };
 
 const client: typeof TelegramClient = new TelegramClient(
-  new StoreSession("session"),
+  new StoreSession(Config.TelegramSessionName),
   apiCredentials.apiId,
   apiCredentials.apiHash
 );

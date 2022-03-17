@@ -30,7 +30,7 @@ interface ILoginForm extends ISignInRequestData {
   password?: "";
 }
 
-export const Index: React.FC<ILoginPage> = ({ className }) => {
+export const BaseLoginPage: React.FC<ILoginPage> = ({ className }) => {
   const ipc = new IpcService();
   const [step, setStep] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
@@ -201,7 +201,7 @@ export const Index: React.FC<ILoginPage> = ({ className }) => {
   );
 };
 
-export const LoginPage = styled(Index)`
+export const LoginPage = styled(BaseLoginPage)`
   display: flex;
   flex-direction: column;
   align-items: center;

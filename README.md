@@ -35,7 +35,7 @@ my-auth/
 ├── public/
 ├── src/
 │   ├── components/
-│   │   └──  Home.tsx/
+│   │   └──  Content.tsx/
 │   ├── router/
 │   │   └──  index.tsx/
 

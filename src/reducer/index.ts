@@ -1,8 +1,10 @@
 import { combineReducers } from "redux";
 import { authReducer } from "./auth";
+import { explorerReducer } from "./explorer";
 
 export const rootReducer = combineReducers({
-    authReducer,
+  authReducer,
+  explorerReducer,
 });
 
 // RootState

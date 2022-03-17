@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { StyledProps } from "../../shared/interface/component";
-import { Box, Button, Drawer, Grid, Input, Paper } from "@mui/material";
+import { AppBar, Box, Button, Drawer, Grid, Input, Paper } from "@mui/material";
 import { IpcService } from "../../ipc";
 import {
   IpcChannel,
@@ -11,15 +11,14 @@ import { ISendMediaToMe } from "../../shared/interface/gramjs/auth";
 import { IMessage } from "../../shared/interface/gramjs/message";
 import { IDownloadFileRequestData } from "../../shared/interface/gramjs/file";
 import styled from "@emotion/styled";
-import { DirectoryList } from "./Directory";
+import { ExplorerNav } from "./Nav";
+import { ExplorerContent } from "./Content";
 
-const BaseHomePage: React.FC<StyledProps> = ({ className }) => {
+const BaseExplorerPage: React.FC<StyledProps> = ({ className }) => {
   const ipc = new IpcService();
   const [openLeftDrawer, setOpenLeftDrawer] = useState<boolean>(true);
   const [files, setFiles] = useState<File[]>([]);
   const [message, setMessage] = useState<IMessage | undefined>(undefined);
-  const inputRef = useRef<HTMLInputElement>(null);
-
   const fileOnChange = ({
     currentTarget: { files },
   }: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,25 +56,43 @@ const BaseHomePage: React.FC<StyledProps> = ({ className }) => {
 
   return (
     <div className={className}>
+      <AppBar className="explorer-page__appbar" position="sticky">
+          {"測試"}
+      </AppBar>
+      <Box className="explorer-page__content">
+        <ExplorerContent />
+      </Box>
       <Drawer
-        className="home-page__drawer"
+        className="explorer-page__nav"
         open={openLeftDrawer}
         variant="persistent"
         anchor="left"
       >
-        <DirectoryList />
+        <ExplorerNav />
       </Drawer>
     </div>
   );
 };
 
-export const HomePage = styled(BaseHomePage)`
-  .home-page__drawer {
-    flex-shrink: 0;
+export const ExplorerPage = styled(BaseExplorerPage)`
+  .explorer-page__appbar {
+    height: 70px;
+    width: calc(100vw - 240px);
+    margin-left: 240px;
+  }
 
-    .MuiDrawer-paper {
-      width: 240px;
-      box-sizing: border-box;
-    }
+  .explorer-page__nav {
+    width: 240px;
+    box-sizing: border-box;
+  }
+
+  .explorer-page__content {
+    margin-left: 240px;
+    margin-top: 10px;
+    border: 1px solid;
+    width: calc(100vw - 260px);
+    height: calc(100vh - 120px);
+    display: block;
+    padding: 8px;
   }
 `;

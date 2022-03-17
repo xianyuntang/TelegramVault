@@ -2,6 +2,7 @@ import { IpcMainEvent } from "electron";
 
 export interface IIpcChannel {
   getName(): string;
+
   handle(event: IpcMainEvent, request: IIpcRequest): void;
 }
 
@@ -27,12 +28,15 @@ export enum TelegramMessageAction {
 }
 
 export enum DatabaseAction {
-  LIST_DIRECTORIES = "list-directories"
+  LIST_DIRECTORIES = "list-directories",
+  GET_DIRECTORY = "get-directory",
+  GET_ROOT_DIRECTORY = "get-root-directory",
+  GET_DIRECTORY_MENU = "get-directory-menu",
 }
 
 export enum IpcChannel {
   TELEGRAM_AUTH = "telegram-auth",
   TELEGRAM_FILE = "telegram-file",
   TELEGRAM_MESSAGE = "telegram-message",
-  DATABASE = "database"
+  DATABASE = "database",
 }
