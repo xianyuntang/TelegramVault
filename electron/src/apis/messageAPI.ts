@@ -1,16 +1,18 @@
 import client from "./telegramAPI";
+
+import { FileProvider } from "../db/provider/file";
+import { IFileEntity } from "../../../src/shared/interface/db/file";
 import {
   IEditMessageRequestData,
-  IFileEntity,
   ISendMediaToMeRequestData,
   ISendMediaToMeResponseData,
-} from "../../../src/shared/interface/gramjs/message";
+} from "../../../src/shared/interface/ipc/telegram";
 import { IMessage } from "../../../src/shared/interface/gramjs/message";
-import { FileProvider } from "../db/provider/file";
 
 const { CustomFile } = require("telegram/client/uploads");
 const { Api } = require("telegram");
 const path = require("path");
+
 export const sendMediaToMe = async (
   props: ISendMediaToMeRequestData
 ): Promise<ISendMediaToMeResponseData> => {

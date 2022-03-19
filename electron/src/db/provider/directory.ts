@@ -1,6 +1,6 @@
 import { db, saveDatabase } from "../index";
-import { IDirectoryEntity } from "../../../../src/shared/interface/db";
 import Config from "../../../../src/Config";
+import { IDirectoryEntity } from "../../../../src/shared/interface/db/directory";
 
 export class DirectoryProvider {
   static getRootDirectory = async (): Promise<IDirectoryEntity> => {
@@ -14,23 +14,37 @@ export class DirectoryProvider {
       const newNode: IDirectoryEntity = this._createNewNode(directories[i]);
 
       if (!((directories[i].parentId as number) in directoryMapper)) {
-        directoryMapper[directories[i].id] = newNode;
+        directoryMapper[directories[i].id as number] = newNode;
       } else {
         directoryMapper[directories[i].parentId as number].children?.push(
           newNode
         );
-        directoryMapper[directories[i].id] = newNode;
+        directoryMapper[directories[i].id as number] = newNode;
       }
     }
     return rootDirectoryNode;
   };
-  static createDirectory = async (name: string): Promise<IDirectoryEntity> => {
+  static createDirectory = async (
+    parentId: number,
+    name: string
+  ): Promise<IDirectoryEntity> => {
     const response = await db.run(
-      "INSERT INTO directories (name) VALUES (?)",
+      "INSERT INTO directories (parentId, name) VALUES (?, ?)",
+      parentId,
       name
     );
     await saveDatabase();
     return this.getDirectory(response.lastID);
+  };
+
+  static deleteDirectory = async (id: number): Promise<boolean> => {
+    const exist = await this.getDirectory(id);
+    if (exist) {
+      const response = await db.run("DELETE FROM directories WHERE id =?", id);
+      return !!response.changes;
+    } else {
+      return false;
+    }
   };
 
   static getDirectory = async (id: number): Promise<IDirectoryEntity> => {

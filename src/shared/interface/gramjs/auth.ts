@@ -23,5 +23,3 @@ export interface ISignInResponseData {
 export interface ISignInWithPasswordRequestData {
   password: string;
 }
-
-

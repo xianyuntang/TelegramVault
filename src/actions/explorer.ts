@@ -1,4 +1,4 @@
-import { IDirectoryEntity } from "../shared/interface/db";
+import { IDirectoryEntity } from "../shared/interface/db/directory";
 
 export enum ExplorerAction {
   SET_ROOT_DIRECTORY,

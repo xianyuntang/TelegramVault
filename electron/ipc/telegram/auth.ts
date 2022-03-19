@@ -2,7 +2,6 @@ import {
   IIpcChannel,
   IIpcRequest,
   IpcChannel,
-  TelegramAuthAction,
 } from "../../../src/shared/interface/ipc";
 import { IpcMainEvent } from "electron";
 import { sendCode, signIn, signInWithPassword } from "../../src/apis/authAPI";
@@ -13,6 +12,7 @@ import {
   ISignInWithPasswordRequestData,
 } from "../../../src/shared/interface/gramjs/auth";
 import client from "../../src/apis/telegramAPI";
+import { TelegramAuthAction } from "../../../src/shared/interface/ipc/telegram";
 
 export const telegramAuthChannel: IIpcChannel = {
   getName: () => IpcChannel.TELEGRAM_AUTH,

@@ -1,18 +1,19 @@
-import {editMessage, getDbMessages, sendMediaToMe} from "../apis/messageAPI";
+import { editMessage, getDbMessages, sendMediaToMe } from "../apis/messageAPI";
+
+import { downloadFileFromMessage } from "../apis/fileAPI";
+import { IFileEntity } from "../../../src/shared/interface/db/file";
 import {
   IEditMessageRequestData,
-  IFileEntity,
-  ISendMediaToMeRequestData
-} from "../../../src/shared/interface/gramjs/message";
-import { downloadFileFromMessage } from "../apis/fileAPI";
+  ISendMediaToMeRequestData,
+} from "../../../src/shared/interface/ipc/telegram";
 
 const fs = require("fs");
 const temp = require("temp").track();
 const sqlite3 = require("sqlite3");
 const sqlite = require("sqlite");
-sqlite3.verbose()
+sqlite3.verbose();
 const tempDbPath = temp.path({ suffix: ".db" });
-console.log(tempDbPath)
+console.log(tempDbPath);
 export let db: typeof sqlite3.Database = undefined;
 
 export const initDB = async () => {
@@ -71,9 +72,8 @@ export const fetchDatabase = async () => {
   }
 };
 
-export const saveDatabase = async (update=true) => {
-
-  if(update){
+export const saveDatabase = async (update = true) => {
+  if (update) {
     const message = await getDbMessages();
     await editMessage({
       id: message[0].id,
@@ -84,10 +84,7 @@ export const saveDatabase = async (update=true) => {
       } as IFileEntity,
       message: "Do not delete this file !!!",
     } as IEditMessageRequestData);
-  }
-
-  else{
-
+  } else {
     await sendMediaToMe({
       file: {
         filename: "telegram-vault.db",
@@ -97,7 +94,5 @@ export const saveDatabase = async (update=true) => {
       message: "Do not delete this file !!!",
     } as ISendMediaToMeRequestData);
   }
-
-
 };
 

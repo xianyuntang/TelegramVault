@@ -2,7 +2,6 @@ import {
   IIpcChannel,
   IIpcRequest,
   IpcChannel,
-  TelegramFileAction,
 } from "../../../src/shared/interface/ipc";
 import { IpcMainEvent } from "electron";
 import { downloadFileFromMessage } from "../../src/apis/fileAPI";
@@ -10,6 +9,7 @@ import {
   IDownloadFileRequestData,
   IDownloadFileResponseData,
 } from "../../../src/shared/interface/gramjs/file";
+import { TelegramFileAction } from "../../../src/shared/interface/ipc/telegram";
 
 export const telegramFileChannel: IIpcChannel = {
   getName: () => IpcChannel.TELEGRAM_FILE,

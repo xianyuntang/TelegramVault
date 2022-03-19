@@ -1,5 +1,4 @@
 import { combineReducers } from "redux";
-import { IDirectoryEntity } from "../shared/interface/db";
 import {
   ExplorerAction,
   explorerActionType,
@@ -7,14 +6,19 @@ import {
   ISetRootDirectory,
 } from "../actions/explorer";
 import Config from "../Config";
+import { IDirectoryEntity } from "../shared/interface/db/directory";
 
 interface IRootDirectory {
-  rootDirectory: IDirectoryEntity | null;
+  rootDirectory: IDirectoryEntity;
   currentDirectory: IDirectoryEntity;
 }
 
 const initialRootDirectory: IRootDirectory = {
-  rootDirectory: null,
+  rootDirectory: {
+    id: Config.RootDirectoryId,
+    parentId: null,
+    name: "Root",
+  },
   currentDirectory: {
     id: Config.RootDirectoryId,
     parentId: null,

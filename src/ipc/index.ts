@@ -34,3 +34,7 @@ export class IpcService {
     this.ipcRenderer = window.require("electron").ipcRenderer;
   }
 }
+
+export class ServiceBase {
+  protected ipc: IpcService = new IpcService();
+}

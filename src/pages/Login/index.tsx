@@ -1,26 +1,27 @@
 import React, { useEffect, useState } from "react";
 import {
-  Paper,
   Box,
-  TextField,
   Button,
   Grid,
-  Typography,
+  Paper,
   Skeleton,
+  TextField,
+  Typography,
 } from "@mui/material";
 import { IpcService } from "../../ipc";
-import { IpcChannel, TelegramAuthAction } from "../../shared/interface/ipc";
+import { IpcChannel } from "../../shared/interface/ipc";
 import {
   ISendCodeRequestData,
   ISendCodeResponseData,
   ISignInRequestData,
   ISignInWithPasswordRequestData,
 } from "../../shared/interface/gramjs/auth";
-import { useForm, Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import styled from "@emotion/styled";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setIsAuth } from "../../actions/auth";
+import { TelegramAuthAction } from "../../shared/interface/ipc/telegram";
 
 interface ILoginPage {
   className?: string;

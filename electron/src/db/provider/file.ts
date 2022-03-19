@@ -1,5 +1,5 @@
-import { IFileEntity } from "../../../../src/shared/interface/gramjs/message";
 import { db, saveDatabase } from "../index";
+import { IFileEntity } from "../../../../src/shared/interface/db/file";
 
 export class FileProvider {
   static createFile = async (fileEntity: IFileEntity): Promise<IFileEntity> => {

@@ -1,36 +1,14 @@
-import React, { useRef, useState, DragEvent, useEffect } from "react";
+import React, { DragEvent, useEffect, useState } from "react";
 import { StyledProps } from "../../shared/interface/component";
-import {
-  Box,
-  Button,
-  Drawer,
-  Grid,
-  Input,
-  Paper,
-  Typography,
-} from "@mui/material";
-import { IpcService } from "../../ipc";
+import { Box, Paper, Typography } from "@mui/material";
 
 import styled from "@emotion/styled";
 import { useSelector } from "react-redux";
 import { stateType } from "../../reducer";
-import {
-  DatabaseAction,
-  IpcChannel,
-  TelegramFileAction,
-  TelegramMessageAction,
-} from "../../shared/interface/ipc";
-import {
-  IFileEntity,
-  ISendMediaToMeRequestData,
-  ISendMediaToMeResponseData,
-} from "../../shared/interface/gramjs/message";
-import { IGetFilesRequestData } from "../../shared/interface/db";
 import InsertDriveFileRoundedIcon from "@mui/icons-material/InsertDriveFileRounded";
-
-interface IFileListProps extends StyledProps {
-  files: IFileEntity[];
-}
+import { telegramService } from "../../ipc/service/telegram";
+import { fileService } from "../../ipc/service/file";
+import { IFileEntity } from "../../shared/interface/db/file";
 
 interface IFileProps extends StyledProps {
   file: IFileEntity;
@@ -41,7 +19,6 @@ interface IFileIcon extends StyledProps {
 }
 
 const BaseExplorerContent: React.FC<StyledProps> = ({ className }) => {
-  const ipc = new IpcService();
   const [files, setFiles] = useState<IFileEntity[]>([]);
   const currentDirectory = useSelector(
     (state: stateType) => state.explorerReducer.explorer.currentDirectory
@@ -49,22 +26,12 @@ const BaseExplorerContent: React.FC<StyledProps> = ({ className }) => {
 
   useEffect(() => {
     (async () => {
-      const files: IFileEntity[] = await ipc.send(
-        IpcChannel.DATABASE,
-        DatabaseAction.GET_FILES,
-        {
-          data: {
-            directoryId: currentDirectory.id,
-          } as IGetFilesRequestData,
-        }
-      );
+      const files = await fileService.getFiles({
+        directoryId: currentDirectory.id as number,
+      });
       setFiles(files);
     })();
   }, [currentDirectory]);
-
-  const handleFileOnDragEnter = (evt: DragEvent<HTMLDivElement>) => {
-    // console.log(evt);
-  };
 
   const handleFileOnDragOver = (evt: DragEvent<HTMLDivElement>) => {
     evt.preventDefault();
@@ -75,20 +42,15 @@ const BaseExplorerContent: React.FC<StyledProps> = ({ className }) => {
     evt.preventDefault();
     evt.stopPropagation();
     Array.from(evt.dataTransfer.files).forEach(async (file) => {
-      const uploadResponse: ISendMediaToMeResponseData = await ipc.send(
-        IpcChannel.TELEGRAM_MESSAGE,
-        TelegramMessageAction.SEND_MEDIA_TO_ME,
-        {
-          data: {
-            file: {
-              filename: file.name,
-              filepath: file.path,
-              filesize: file.size,
-              directoryId: currentDirectory.id,
-            } as IFileEntity,
-          },
-        }
-      );
+      const uploadResponse = await telegramService.sendMediaToMe({
+        file: {
+          filename: file.name,
+          filepath: file.path,
+          filesize: file.size,
+          directoryId: currentDirectory.id,
+        } as IFileEntity,
+      });
+
       const newFiles = [...files, uploadResponse.file];
       setFiles(newFiles);
     });
@@ -98,7 +60,6 @@ const BaseExplorerContent: React.FC<StyledProps> = ({ className }) => {
       className={className}
       onDrop={handleFileOnDrop}
       onDragOver={handleFileOnDragOver}
-      onDragEnter={handleFileOnDragEnter}
     >
       <Box className="explorer-content__file-list">
         {files.map((file, index) => (
