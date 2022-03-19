@@ -24,14 +24,14 @@ export enum TelegramFileAction {
 }
 
 export enum TelegramMessageAction {
-  SEND_MESSAGE_TO_ME = "send-message-to-me",
+  SEND_MEDIA_TO_ME = "send-message-to-me",
 }
 
 export enum DatabaseAction {
   LIST_DIRECTORIES = "list-directories",
   GET_DIRECTORY = "get-directory",
   GET_ROOT_DIRECTORY = "get-root-directory",
-  GET_DIRECTORY_MENU = "get-directory-menu",
+  GET_FILES = "get-files",
 }
 
 export enum IpcChannel {

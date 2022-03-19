@@ -1,13 +1,18 @@
-import { getDbMessages, sendMediaToMe } from "../apis/messageAPI";
-import { ISendMediaToMe } from "../../../src/shared/interface/gramjs/auth";
+import {editMessage, getDbMessages, sendMediaToMe} from "../apis/messageAPI";
+import {
+  IEditMessageRequestData,
+  IFileEntity,
+  ISendMediaToMeRequestData
+} from "../../../src/shared/interface/gramjs/message";
 import { downloadFileFromMessage } from "../apis/fileAPI";
 
 const fs = require("fs");
 const temp = require("temp").track();
 const sqlite3 = require("sqlite3");
 const sqlite = require("sqlite");
+sqlite3.verbose()
 const tempDbPath = temp.path({ suffix: ".db" });
-
+console.log(tempDbPath)
 export let db: typeof sqlite3.Database = undefined;
 
 export const initDB = async () => {
@@ -42,13 +47,14 @@ export const initDB = async () => {
       "            references directories (id),\n" +
       "    filename       CHAR(50) NOT NULL,\n" +
       "    filesize       INTEGER  NOT NULL,\n" +
-      "    accessHash    INTEGER,\n" +
+      "    fileExt       CHAR(10)  NOT NULL,\n" +
+      "    accessHash    CHAR(50),\n" +
       "    fileReference BLOB,\n" +
       "    messageId     INTEGER\n" +
       ")"
   );
 
-  await writeDatabase();
+  await saveDatabase(false);
 };
 
 export const fetchDatabase = async () => {
@@ -57,7 +63,7 @@ export const fetchDatabase = async () => {
     driver: sqlite3.Database,
   });
   const message = await getDbMessages();
-  if (message.total) {
+  if (message.length) {
     const file = await downloadFileFromMessage(message[0]);
     fs.writeFileSync(tempDbPath, file.data);
   } else {
@@ -65,10 +71,33 @@ export const fetchDatabase = async () => {
   }
 };
 
-const writeDatabase = async () => {
-  await sendMediaToMe({
-    filename: "telegram-vault.db",
-    filepath: tempDbPath,
-    message: "Do not delete this file !!!",
-  } as ISendMediaToMe);
+export const saveDatabase = async (update=true) => {
+
+  if(update){
+    const message = await getDbMessages();
+    await editMessage({
+      id: message[0].id,
+      file: {
+        filename: "telegram-vault.db",
+        filepath: tempDbPath,
+        filesize: fs.statSync(tempDbPath).size,
+      } as IFileEntity,
+      message: "Do not delete this file !!!",
+    } as IEditMessageRequestData);
+  }
+
+  else{
+
+    await sendMediaToMe({
+      file: {
+        filename: "telegram-vault.db",
+        filepath: tempDbPath,
+        filesize: fs.statSync(tempDbPath).size,
+      } as IFileEntity,
+      message: "Do not delete this file !!!",
+    } as ISendMediaToMeRequestData);
+  }
+
+
 };
+

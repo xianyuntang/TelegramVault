@@ -1,21 +1,25 @@
 import { combineReducers } from "redux";
-import { IDirectory } from "../shared/interface/db";
+import { IDirectoryEntity } from "../shared/interface/db";
 import {
   ExplorerAction,
   explorerActionType,
-  ISetCurrentDirectoryId,
+  ISetCurrentDirectory,
   ISetRootDirectory,
 } from "../actions/explorer";
 import Config from "../Config";
 
 interface IRootDirectory {
-  rootDirectory: IDirectory | null;
-  currentDirectoryId: number;
+  rootDirectory: IDirectoryEntity | null;
+  currentDirectory: IDirectoryEntity;
 }
 
 const initialRootDirectory: IRootDirectory = {
   rootDirectory: null,
-  currentDirectoryId: Config.RootDirectoryId,
+  currentDirectory: {
+    id: Config.RootDirectoryId,
+    parentId: null,
+    name: "Root",
+  },
 };
 
 export const explorer = (
@@ -29,11 +33,10 @@ export const explorer = (
         rootDirectory: (action as ISetRootDirectory).rootDirectory,
       } as IRootDirectory;
     }
-    case ExplorerAction.SET_CURRENT_DIRECTORY_ID: {
+    case ExplorerAction.SET_CURRENT_DIRECTORY: {
       return {
         ...state,
-        currentDirectoryId: (action as ISetCurrentDirectoryId)
-          .currentDirectoryId,
+        currentDirectory: (action as ISetCurrentDirectory).currentDirectory,
       };
     }
     default:

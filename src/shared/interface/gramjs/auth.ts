@@ -24,10 +24,4 @@ export interface ISignInWithPasswordRequestData {
   password: string;
 }
 
-export interface ISendMediaToMe {
-  filename: string;
-  filepath: string;
-  message?: string;
-}
 
-export interface IDownloadFile {}

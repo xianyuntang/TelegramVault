@@ -10,7 +10,7 @@ export class IpcService {
     request: IIpcRequest = {}
   ): Promise<T> {
     if (!request.responseChannel) {
-      request.responseChannel = `${channel}_response_${new Date().getTime()}`;
+      request.responseChannel = `${channel}_${action}_response_${new Date().getTime()}`;
     }
     if (!request.action) {
       request.action = action;

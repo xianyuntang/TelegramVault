@@ -1,10 +1,5 @@
 import { IMessage } from "./message";
 
-export interface ISaveFilePartRequestData {
-  fileId: BigInt;
-  filePart: number;
-  bytes: string;
-}
 
 export interface Message {}
 

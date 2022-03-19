@@ -1,11 +1,15 @@
-export interface IDirectory {
-  parentId: number;
+export interface IDirectoryEntity {
+  parentId: number | null;
   id: number;
   name: string;
   expand?: boolean;
-  children?: IDirectory[];
+  children?: IDirectoryEntity[];
 }
 
 export interface IGetDirectoryRequestData {
   parentId: number | null;
+}
+
+export interface IGetFilesRequestData {
+  directoryId: number;
 }

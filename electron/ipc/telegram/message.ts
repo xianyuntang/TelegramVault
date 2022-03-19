@@ -6,7 +6,10 @@ import {
 } from "../../../src/shared/interface/ipc";
 import { IpcMainEvent } from "electron";
 import { sendMediaToMe } from "../../src/apis/messageAPI";
-import { ISendMediaToMe } from "../../../src/shared/interface/gramjs/auth";
+import {
+  ISendMediaToMeRequestData,
+  ISendMediaToMeResponseData,
+} from "../../../src/shared/interface/gramjs/message";
 import { IMessage } from "../../../src/shared/interface/gramjs/message";
 
 export const telegramMessageChannel: IIpcChannel = {
@@ -16,10 +19,10 @@ export const telegramMessageChannel: IIpcChannel = {
       request.responseChannel = `${this.getName()}_response`;
     }
     switch (request.action) {
-      case TelegramMessageAction.SEND_MESSAGE_TO_ME: {
+      case TelegramMessageAction.SEND_MEDIA_TO_ME: {
         (async () => {
-          const message: IMessage = await sendMediaToMe(
-            request.data as ISendMediaToMe
+          const message: ISendMediaToMeResponseData = await sendMediaToMe(
+            request.data as ISendMediaToMeRequestData
           );
           event.sender.send(request.responseChannel as string, message);
         })();

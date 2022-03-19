@@ -1,32 +1,32 @@
-import { IDirectory } from "../shared/interface/db";
+import { IDirectoryEntity } from "../shared/interface/db";
 
 export enum ExplorerAction {
   SET_ROOT_DIRECTORY,
-  SET_CURRENT_DIRECTORY_ID,
+  SET_CURRENT_DIRECTORY,
 }
 
 export interface ISetRootDirectory {
   type: ExplorerAction;
-  rootDirectory: IDirectory;
+  rootDirectory: IDirectoryEntity;
 }
 
-export interface ISetCurrentDirectoryId {
+export interface ISetCurrentDirectory {
   type: ExplorerAction;
-  currentDirectoryId: number;
+  currentDirectory: IDirectoryEntity;
 }
 
-export type explorerActionType = ISetRootDirectory | ISetCurrentDirectoryId;
+export type explorerActionType = ISetRootDirectory | ISetCurrentDirectory;
 
 export const setRootDirectory = (
-  rootDirectory: IDirectory
+  rootDirectory: IDirectoryEntity
 ): explorerActionType => ({
   type: ExplorerAction.SET_ROOT_DIRECTORY,
   rootDirectory: rootDirectory,
 });
 
-export const setCurrentDirectoryId = (
-  currentDirectoryId: number
+export const setCurrentDirectory = (
+  currentDirectory: IDirectoryEntity
 ): explorerActionType => ({
-  type: ExplorerAction.SET_CURRENT_DIRECTORY_ID,
-  currentDirectoryId: currentDirectoryId,
+  type: ExplorerAction.SET_CURRENT_DIRECTORY,
+  currentDirectory: currentDirectory,
 });

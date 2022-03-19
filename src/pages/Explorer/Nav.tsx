@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { IpcService } from "../../ipc";
 import { DatabaseAction, IpcChannel } from "../../shared/interface/ipc";
-import { IDirectory } from "../../shared/interface/db";
+import { IDirectoryEntity } from "../../shared/interface/db";
 import {
   Collapse,
   IconButton,
@@ -11,6 +11,7 @@ import {
   ListSubheader,
   ListItemIcon,
   ListItemText,
+  Box,
 } from "@mui/material";
 
 import styled from "@emotion/styled";
@@ -18,15 +19,12 @@ import { StyledProps } from "../../shared/interface/component";
 
 import { ExpandLess, ExpandMore, Folder } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setCurrentDirectoryId,
-  setRootDirectory,
-} from "../../actions/explorer";
+import { setCurrentDirectory, setRootDirectory } from "../../actions/explorer";
 import { stateType } from "../../reducer";
 
 interface IDirectoryItem extends StyledProps {
   depth: number;
-  directory: IDirectory;
+  directory: IDirectoryEntity;
   refresh: () => void;
 }
 
@@ -39,17 +37,18 @@ export const BaseExplorerNav: React.FC<StyledProps> = ({ className }) => {
 
   useEffect(() => {
     (async () => {
-      const newDirectory: IDirectory = await ipc.send(
+      const newDirectory: IDirectoryEntity = await ipc.send(
         IpcChannel.DATABASE,
-        DatabaseAction.GET_DIRECTORY_MENU
+        DatabaseAction.GET_ROOT_DIRECTORY
       );
+      console.log(newDirectory);
       dispatch(setRootDirectory(newDirectory));
     })();
   }, []);
 
   const refresh = () => {
     if (rootDirectory) {
-      const newRootDirectory: IDirectory = { ...rootDirectory };
+      const newRootDirectory: IDirectoryEntity = { ...rootDirectory };
       dispatch(setRootDirectory(newRootDirectory));
     }
   };
@@ -73,20 +72,19 @@ export const BaseExplorerNav: React.FC<StyledProps> = ({ className }) => {
 const BaseDirectoryItem: React.FC<IDirectoryItem> = (props) => {
   const { className, directory, depth, refresh } = props;
   const dispatch = useDispatch();
-  const handleExpandButtonOnClick = (directory: IDirectory) => {
+  const handleExpandButtonOnClick = (directory: IDirectoryEntity) => {
     directory.expand = !directory.expand;
     refresh();
   };
-  const handleDirectoryButtonOnClick = (directory: IDirectory) => {
-    dispatch(setCurrentDirectoryId(directory.id));
+  const handleDirectoryButtonOnClick = (directory: IDirectoryEntity) => {
+    dispatch(setCurrentDirectory(directory));
   };
   return (
     <>
       {directory.children?.map((subDirectory, index) => (
-        <>
+        <Box key={index}>
           <ListItem
             className={className}
-            key={index}
             secondaryAction={
               <IconButton
                 onClick={() => handleExpandButtonOnClick(subDirectory)}
@@ -119,7 +117,7 @@ const BaseDirectoryItem: React.FC<IDirectoryItem> = (props) => {
               />
             )}
           </Collapse>
-        </>
+        </Box>
       ))}
     </>
   );
@@ -130,4 +128,5 @@ const DirectoryItem = styled(BaseDirectoryItem)`
 `;
 
 export const ExplorerNav = styled(BaseExplorerNav)`
+  width: 240px;
 `;
