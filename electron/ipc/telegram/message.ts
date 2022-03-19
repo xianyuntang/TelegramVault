@@ -10,7 +10,6 @@ import {
   ISendMediaToMeRequestData,
   ISendMediaToMeResponseData,
 } from "../../../src/shared/interface/gramjs/message";
-import { IMessage } from "../../../src/shared/interface/gramjs/message";
 
 export const telegramMessageChannel: IIpcChannel = {
   getName: () => IpcChannel.TELEGRAM_MESSAGE,

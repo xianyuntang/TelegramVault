@@ -6,7 +6,7 @@ import {
   ISendMediaToMeResponseData,
 } from "../../../src/shared/interface/gramjs/message";
 import { IMessage } from "../../../src/shared/interface/gramjs/message";
-import { createFile } from "../db/write";
+import { FileProvider } from "../db/provider/file";
 
 const { CustomFile } = require("telegram/client/uploads");
 const { Api } = require("telegram");
@@ -44,7 +44,7 @@ export const sendMediaToMe = async (
     ).media.document.accessHash.value.toString(),
     messageId: (updates.updates[1].message as IMessage).id,
   };
-  const fileEntity = await createFile(newFile);
+  const fileEntity = await FileProvider.createFile(newFile);
   return { message: updates.updates[1].message as IMessage, file: fileEntity };
 };
 

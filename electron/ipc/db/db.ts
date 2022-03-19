@@ -5,8 +5,10 @@ import {
   IpcChannel,
 } from "../../../src/shared/interface/ipc";
 import { IpcMainEvent } from "electron";
-import { getFiles, getRootDirectory } from "../../src/db/read";
+
 import { IGetFilesRequestData } from "../../../src/shared/interface/db";
+import { FileProvider } from "../../src/db/provider/file";
+import { DirectoryProvider } from "../../src/db/provider/directory";
 
 export const databaseChannel: IIpcChannel = {
   getName: () => IpcChannel.DATABASE,
@@ -17,7 +19,7 @@ export const databaseChannel: IIpcChannel = {
     switch (request.action) {
       case DatabaseAction.GET_ROOT_DIRECTORY: {
         (async () => {
-          const response = await getRootDirectory();
+          const response = await DirectoryProvider.getRootDirectory();
           // root should be an element
           event.sender.send(request.responseChannel as string, response);
         })();
@@ -25,7 +27,7 @@ export const databaseChannel: IIpcChannel = {
       }
       case DatabaseAction.GET_FILES: {
         (async () => {
-          const response = await getFiles(
+          const response = await FileProvider.getFiles(
             (request.data as IGetFilesRequestData).directoryId
           );
           event.sender.send(request.responseChannel as string, response);
