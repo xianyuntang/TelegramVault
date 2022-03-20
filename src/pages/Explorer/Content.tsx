@@ -84,8 +84,19 @@ export const ExplorerContent = styled(BaseExplorerContent)`
 
 const BaseFileCard: React.FC<IFileProps> = (props) => {
   const { className, file } = props;
+  const handleDragStart = async (evt: any) => {
+    evt.preventDefault();
+    telegramService
+      .downloadFile({ messageId: file.messageId, filename: file.filename })
+      .catch((err) => console.log(err));
+  };
   return (
-    <Paper draggable elevation={6} className={className}>
+    <Paper
+      draggable
+      elevation={6}
+      className={className}
+      onDragStart={handleDragStart}
+    >
       <FileIcon ext={file.fileExt} />
       <Box className="file-card__content">
         <Typography variant="subtitle2">{file.filename}</Typography>

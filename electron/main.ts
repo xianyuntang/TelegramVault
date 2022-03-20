@@ -6,7 +6,7 @@ import installExtension, {
 import { IIpcChannel } from "../src/shared/interface/ipc";
 import { connectTelegramClient } from "./src/apis/telegramAPI";
 import { registeredChannel } from "./ipc";
-import { db, initDB, fetchDatabase } from "./src/db";
+import { fetchDatabase } from "./src/db";
 import { checkAuthorization } from "./src/apis/authAPI";
 
 function createWindow() {
@@ -16,7 +16,7 @@ function createWindow() {
     minWidth: 800,
     minHeight: 600,
     webPreferences: {
-      contextIsolation: false,
+      contextIsolation: true,
       nodeIntegration: true,
       preload: path.join(__dirname, "preload.js"),
     },
@@ -65,6 +65,12 @@ app.whenReady().then(async () => {
 
   if (await checkAuthorization()) {
     await fetchDatabase();
+  }
+
+  if (app.isPackaged) {
+  } else {
+    // @ts-ignore
+    global.__static = path.join(__dirname, "..", "..", "public");
   }
 
   // DevTools

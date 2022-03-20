@@ -92,6 +92,7 @@ export const BaseExplorerNav: React.FC<StyledProps> = ({ className }) => {
 
   const _addDirectory = async () => {
     if (targetDirectory) {
+      setAnchorEl(null);
       const response = await directoryService.createDirectory({
         parentId: targetDirectory.id as number,
         name: "New Folder",
@@ -105,7 +106,7 @@ export const BaseExplorerNav: React.FC<StyledProps> = ({ className }) => {
       targetDirectory.children?.push(newDirectory);
       targetDirectory.expand = true;
       const newRootDirectory: IDirectoryEntity = { ...rootDirectory };
-      setAnchorEl(null);
+
       dispatch(setRootDirectory(newRootDirectory));
     }
   };

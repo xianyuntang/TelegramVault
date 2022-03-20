@@ -1,4 +1,8 @@
-import telegramChannel from "./telegram/index";
+import telegramChannel from "./telegram";
 import databaseChannel from "./db";
 
 export const registeredChannel = [...telegramChannel, ...databaseChannel];
+
+
+
+

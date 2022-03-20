@@ -9,8 +9,8 @@ interface IApiCredentials {
 }
 
 export const apiCredentials: IApiCredentials = {
-  apiId: parseInt(<string>process.env.APIID),
-  apiHash: process.env.APIHASH || "",
+  apiId: parseInt(Config.API_ID as string),
+  apiHash: Config.API_HASH as string,
 };
 
 const client: typeof TelegramClient = new TelegramClient(

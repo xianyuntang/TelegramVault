@@ -77,6 +77,10 @@ export const editMessage = async (props: IEditMessageRequestData) => {
   return updates.updates[0].message as IMessage;
 };
 
+export const getMessage = async (id: number): Promise<IMessage> => {
+  return await client.getMessages("me", { ids: id });
+};
+
 export const getDbMessages = async (): Promise<IMessage[]> => {
   return await client.getMessages("me", {
     limit: 1,

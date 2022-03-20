@@ -23,7 +23,7 @@ export const RootRouter: React.FC = () => {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route path="/" element={<RequireAuth redirect="login" />}>
-            <Route path="/" element={<ExplorerPage />} />
+            <Route path="/" element={<LoginPage />} />
           </Route>
           <Route path="/login" element={<LoginPage />} />
         </Route>

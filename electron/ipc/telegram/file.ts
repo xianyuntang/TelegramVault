@@ -10,6 +10,9 @@ import {
   IDownloadFileResponseData,
 } from "../../../src/shared/interface/gramjs/file";
 import { TelegramFileAction } from "../../../src/shared/interface/ipc/telegram";
+import { getMessage } from "../../src/apis/messageAPI";
+
+const path = require("path");
 
 export const telegramFileChannel: IIpcChannel = {
   getName: () => IpcChannel.TELEGRAM_FILE,
@@ -17,13 +20,24 @@ export const telegramFileChannel: IIpcChannel = {
     if (!request.responseChannel) {
       request.responseChannel = `${this.getName()}_response`;
     }
+
+    console.log();
     switch (request.action) {
       case TelegramFileAction.DOWNLOAD_FILE: {
         (async () => {
+          event.sender.startDrag({
+            file: path.join(
+              __dirname,
+              (request.data as IDownloadFileRequestData).filename
+            ),
+            // @ts-ignore
+            icon: path.join(__static, "images", "cloud-download.png"),
+          });
+          const message = await getMessage(
+            (request.data as IDownloadFileRequestData).messageId as number
+          );
           const response: IDownloadFileResponseData =
-            await downloadFileFromMessage(
-              (request.data as IDownloadFileRequestData).message
-            );
+            await downloadFileFromMessage(message);
           event.sender.send(request.responseChannel as string, response);
         })();
         break;
