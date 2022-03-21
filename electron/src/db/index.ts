@@ -2,10 +2,6 @@ import { editMessage, getDbMessages, sendMediaToMe } from "../apis/messageAPI";
 
 import { downloadFileFromMessage } from "../apis/fileAPI";
 import { IFileEntity } from "../../../src/shared/interface/db/file";
-import {
-  IEditMessageRequestData,
-  ISendMediaToMeRequestData,
-} from "../../../src/shared/interface/ipc/telegram";
 
 const fs = require("fs");
 const temp = require("temp").track();
@@ -75,24 +71,25 @@ export const fetchDatabase = async () => {
 export const saveDatabase = async (update = true) => {
   if (update) {
     const message = await getDbMessages();
-    await editMessage({
-      id: message[0].id,
-      file: {
+
+    await editMessage(
+      message[0].id,
+      {
         filename: "telegram-vault.db",
         filepath: tempDbPath,
         filesize: fs.statSync(tempDbPath).size,
       } as IFileEntity,
-      message: "Do not delete this file !!!",
-    } as IEditMessageRequestData);
+      "Do Not Delete This File !!!"
+    );
   } else {
-    await sendMediaToMe({
-      file: {
+    await sendMediaToMe(
+      {
         filename: "telegram-vault.db",
         filepath: tempDbPath,
         filesize: fs.statSync(tempDbPath).size,
       } as IFileEntity,
-      message: "Do not delete this file !!!",
-    } as ISendMediaToMeRequestData);
+      "Do not delete this file !!!"
+    );
   }
 };
 

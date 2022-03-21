@@ -13,20 +13,18 @@ import {
 
 export const telegramMessageChannel: IIpcChannel = {
   getName: () => IpcChannel.TELEGRAM_MESSAGE,
-  handle(event: IpcMainEvent, request: IIpcRequest) {
+  async handle(event: IpcMainEvent, request: IIpcRequest) {
     if (!request.responseChannel) {
       request.responseChannel = `${this.getName()}_response`;
     }
-    switch (request.action) {
-      case TelegramMessageAction.SEND_MEDIA_TO_ME: {
-        (async () => {
-          const message: ISendMediaToMeResponseData = await sendMediaToMe(
-            request.data as ISendMediaToMeRequestData
-          );
-          event.sender.send(request.responseChannel as string, message);
-        })();
-        break;
-      }
+
+    if (request.action === TelegramMessageAction.SEND_MEDIA_TO_ME) {
+      const requestData = request.data as ISendMediaToMeRequestData;
+
+      const message: ISendMediaToMeResponseData = await sendMediaToMe(
+        requestData.file,
+      );
+      event.sender.send(request.responseChannel as string, message);
     }
   },
 };

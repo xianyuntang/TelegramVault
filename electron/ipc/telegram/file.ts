@@ -16,32 +16,26 @@ const path = require("path");
 
 export const telegramFileChannel: IIpcChannel = {
   getName: () => IpcChannel.TELEGRAM_FILE,
-  handle(event: IpcMainEvent, request: IIpcRequest) {
+  async handle(event: IpcMainEvent, request: IIpcRequest) {
     if (!request.responseChannel) {
       request.responseChannel = `${this.getName()}_response`;
     }
 
-    console.log();
-    switch (request.action) {
-      case TelegramFileAction.DOWNLOAD_FILE: {
-        (async () => {
-          event.sender.startDrag({
-            file: path.join(
-              __dirname,
-              (request.data as IDownloadFileRequestData).filename
-            ),
-            // @ts-ignore
-            icon: path.join(__static, "images", "cloud-download.png"),
-          });
-          const message = await getMessage(
-            (request.data as IDownloadFileRequestData).messageId as number
-          );
-          const response: IDownloadFileResponseData =
-            await downloadFileFromMessage(message);
-          event.sender.send(request.responseChannel as string, response);
-        })();
-        break;
-      }
+    if (request.action === TelegramFileAction.DOWNLOAD_FILE) {
+      event.sender.startDrag({
+        file: path.join(
+          __dirname,
+          (request.data as IDownloadFileRequestData).filename
+        ),
+        // @ts-ignore
+        icon: path.join(__static, "images", "cloud-download.png"),
+      });
+      const requestData = request.data as IDownloadFileRequestData;
+      const message = await getMessage(requestData.messageId as number);
+      const response: IDownloadFileResponseData = await downloadFileFromMessage(
+        message
+      );
+      event.sender.send(request.responseChannel as string, response);
     }
   },
 };

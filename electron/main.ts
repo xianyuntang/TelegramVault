@@ -7,7 +7,7 @@ import { IIpcChannel } from "../src/shared/interface/ipc";
 import { connectTelegramClient } from "./src/apis/telegramAPI";
 import { registeredChannel } from "./ipc";
 import { fetchDatabase } from "./src/db";
-import { checkAuthorization } from "./src/apis/authAPI";
+import {AuthAPI} from "./src/apis/authAPI";
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -63,7 +63,7 @@ app.whenReady().then(async () => {
   }
   registerIpcChannels(registeredChannel);
 
-  if (await checkAuthorization()) {
+  if (await AuthAPI.checkAuthorization()) {
     await fetchDatabase();
   }
 

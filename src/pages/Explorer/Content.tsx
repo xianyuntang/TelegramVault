@@ -6,9 +6,8 @@ import styled from "@emotion/styled";
 import { useSelector } from "react-redux";
 import { stateType } from "../../reducer";
 import InsertDriveFileRoundedIcon from "@mui/icons-material/InsertDriveFileRounded";
-import { telegramService } from "../../ipc/service/telegram";
-import { fileService } from "../../ipc/service/file";
 import { IFileEntity } from "../../shared/interface/db/file";
+import { fileService, telegramService } from "../../ipc/service";
 
 interface IFileProps extends StyledProps {
   file: IFileEntity;
@@ -26,9 +25,7 @@ const BaseExplorerContent: React.FC<StyledProps> = ({ className }) => {
 
   useEffect(() => {
     (async () => {
-      const files = await fileService.getFiles({
-        directoryId: currentDirectory.id as number,
-      });
+      const files = await fileService.getFiles(currentDirectory.id as number);
       setFiles(files);
     })();
   }, [currentDirectory]);
@@ -43,13 +40,11 @@ const BaseExplorerContent: React.FC<StyledProps> = ({ className }) => {
     evt.stopPropagation();
     Array.from(evt.dataTransfer.files).forEach(async (file) => {
       const uploadResponse = await telegramService.sendMediaToMe({
-        file: {
-          filename: file.name,
-          filepath: file.path,
-          filesize: file.size,
-          directoryId: currentDirectory.id,
-        } as IFileEntity,
-      });
+        filename: file.name,
+        filepath: file.path,
+        filesize: file.size,
+        directoryId: currentDirectory.id,
+      } as IFileEntity);
 
       const newFiles = [...files, uploadResponse.file];
       setFiles(newFiles);
@@ -87,7 +82,7 @@ const BaseFileCard: React.FC<IFileProps> = (props) => {
   const handleDragStart = async (evt: any) => {
     evt.preventDefault();
     telegramService
-      .downloadFile({ messageId: file.messageId, filename: file.filename })
+      .downloadFile(file.messageId as number, file.filename)
       .catch((err) => console.log(err));
   };
   return (

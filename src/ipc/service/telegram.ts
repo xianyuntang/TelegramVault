@@ -1,40 +1,37 @@
 import {IpcChannel} from "../../shared/interface/ipc";
-import {IDownloadFileRequestData} from "../../shared/interface/gramjs/file";
 import {ServiceBase} from "../index";
 
 import {
-    ISendMediaToMeRequestData,
     ISendMediaToMeResponseData,
     TelegramAuthAction,
     TelegramFileAction,
     TelegramMessageAction,
 } from "../../shared/interface/ipc/telegram";
 import {
-    ISendCodeRequestData,
     ISendCodeResponseData,
-    ISignInRequestData,
     ISignInResponseData,
     ISignInWithPasswordRequestData,
 } from "../../shared/interface/gramjs/auth";
+import {IFileEntity} from "../../shared/interface/db/file";
 
-class TelegramService extends ServiceBase {
-    public downloadFile = async (data: IDownloadFileRequestData) => {
+export class TelegramService extends ServiceBase {
+    public downloadFile = async (messageId: number, filename: string) => {
         return await this.ipc.send(
             IpcChannel.TELEGRAM_FILE,
             TelegramFileAction.DOWNLOAD_FILE,
             {
-                data: data,
+                data: {messageId, filename},
             }
         );
     };
     public sendMediaToMe = (
-        data: ISendMediaToMeRequestData
+        file: IFileEntity
     ): Promise<ISendMediaToMeResponseData> => {
         return this.ipc.send(
             IpcChannel.TELEGRAM_MESSAGE,
             TelegramMessageAction.SEND_MEDIA_TO_ME,
             {
-                data: data,
+                data: {file},
             }
         );
     };
@@ -46,36 +43,37 @@ class TelegramService extends ServiceBase {
         );
     };
 
-    public sendCode = (
-        data: ISendCodeRequestData
-    ): Promise<ISendCodeResponseData> => {
+    public sendCode = (phoneNumber: string): Promise<ISendCodeResponseData> => {
         return this.ipc.send(
             IpcChannel.TELEGRAM_AUTH,
             TelegramAuthAction.SEND_CODE,
             {
-                data: data,
+                data: {phoneNumber},
             }
         );
     };
 
-    public signIn = (data: ISignInRequestData): Promise<ISignInResponseData> => {
+    public signIn = (
+        phoneNumber: string,
+        phoneCodeHash: string,
+        phoneCode: string
+    ): Promise<ISignInResponseData> => {
         return this.ipc.send(IpcChannel.TELEGRAM_AUTH, TelegramAuthAction.SIGN_IN, {
-            data: data,
+            data: {phoneNumber, phoneCodeHash, phoneCode},
         });
     };
 
     public signInWithPassword = (
-        data: ISignInWithPasswordRequestData
+        password: string
     ): Promise<ISignInWithPasswordRequestData> => {
         return this.ipc.send(
             IpcChannel.TELEGRAM_AUTH,
             TelegramAuthAction.SIGN_IN_WITH_PASSWORD,
             {
-                data: data,
+                data: {password},
             }
         );
     };
 }
 
 
-export const telegramService = new TelegramService();

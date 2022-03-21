@@ -15,7 +15,6 @@ import {
 
 import styled from "@emotion/styled";
 import { StyledProps } from "../../shared/interface/component";
-import { directoryService } from "../../ipc/service/directory";
 import {
   ContentCopy,
   ContentCut,
@@ -27,6 +26,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCurrentDirectory, setRootDirectory } from "../../actions/explorer";
 import { stateType } from "../../reducer";
 import { IDirectoryEntity } from "../../shared/interface/db/directory";
+import { directoryService } from "../../ipc/service";
 
 interface IDirectoryItem extends StyledProps {
   depth: number;

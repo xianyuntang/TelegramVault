@@ -17,7 +17,6 @@ export enum TelegramMessageAction {
 }
 
 export interface ISendMediaToMeRequestData {
-  message?: string;
   file: IFileEntity;
 }
 

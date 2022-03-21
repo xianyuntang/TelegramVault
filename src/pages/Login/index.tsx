@@ -5,10 +5,10 @@ import styled from "@emotion/styled";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setIsAuth } from "../../actions/auth";
-import { telegramService } from "../../ipc/service/telegram";
 import { SendCodeForm } from "./LoginStep/SendCode";
 import { SignInForm } from "./LoginStep/SignIn";
 import { SignInWithPasswordForm } from "./LoginStep/SignInWithPassword";
+import { telegramService } from "../../ipc/service";
 
 interface ILoginPage {
   className?: string;
@@ -55,6 +55,10 @@ export const BaseLoginPage: React.FC<ILoginPage> = ({ className }) => {
     })();
   }, []);
 
+  const setPhoneNumber = (value: string) => {
+    setValue("phoneNumber", value);
+  };
+
   const setPhoneCodeHash = (value: string) => {
     setValue("phoneCodeHash", value);
   };
@@ -75,6 +79,7 @@ export const BaseLoginPage: React.FC<ILoginPage> = ({ className }) => {
             </Typography>
             {step === 1 && (
               <SendCodeForm
+                setPhoneNumber={setPhoneNumber}
                 setPhoneCodeHash={setPhoneCodeHash}
                 nextStep={nextStep}
               />

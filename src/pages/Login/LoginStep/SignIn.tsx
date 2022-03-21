@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Controller,
   SubmitErrorHandler,
   SubmitHandler,
   useForm,
 } from "react-hook-form";
-import { telegramService } from "../../../ipc/service/telegram";
-import { Box, Button, TextField } from "@mui/material";
+import { Box, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { ITelegramError } from "../../../shared/interface/gramjs";
+import { LoadingButton } from "@mui/lab";
+import { telegramService } from "../../../ipc/service";
 
 interface ISignInForm {
   phoneNumber: string;
@@ -23,13 +25,10 @@ interface ISignInFormProps {
 
 export const SignInForm: React.FC<ISignInFormProps> = (props) => {
   const { nextStep } = props;
+  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const { phoneNumber, phoneCodeHash } = props;
-  const {
-    handleSubmit,
-    control,
-    getValues,
-  } = useForm<ISignInForm>({
+  const { handleSubmit, control, getValues } = useForm<ISignInForm>({
     defaultValues: {
       phoneNumber: phoneNumber,
       phoneCodeHash: phoneCodeHash,
@@ -38,12 +37,17 @@ export const SignInForm: React.FC<ISignInFormProps> = (props) => {
   });
 
   const onSubmit: SubmitHandler<ISignInForm> = async (data) => {
+    setLoading(true);
     try {
-      await telegramService.signIn(getValues());
+      const { phoneNumber, phoneCode, phoneCodeHash } = getValues();
+      await telegramService.signIn(phoneNumber, phoneCodeHash, phoneCode);
       navigate("/");
     } catch (e) {
-      nextStep();
+      if ((e as ITelegramError).code === 401) {
+        nextStep();
+      }
     }
+    setLoading(false);
   };
 
   const onError: SubmitErrorHandler<ISignInForm> = async (errors) => {
@@ -65,13 +69,16 @@ export const SignInForm: React.FC<ISignInFormProps> = (props) => {
               {...field}
               label="Phone Code"
               variant="outlined"
+              disabled={loading}
               fullWidth
             />
           )}
         />
       </Box>
       <Box className="login-page__form-item">
-        <Button type="submit"> Sign In</Button>
+        <LoadingButton type="submit" variant="contained" loading={loading}>
+          {"Sign In"}
+        </LoadingButton>
       </Box>
     </form>
   );

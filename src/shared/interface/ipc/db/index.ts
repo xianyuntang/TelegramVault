@@ -1,4 +1,5 @@
 export enum DatabaseAction {
+  FETCH_DATABASE = 'fetch-database',
   LIST_DIRECTORIES = "list-directories",
   GET_DIRECTORY = "get-directory",
   CREATE_DIRECTORY = "create-directory",

@@ -21,52 +21,45 @@ export const telegramAuthChannel: IIpcChannel = {
       request.responseChannel = `${this.getName()}_response`;
     }
 
-    switch (request.action) {
-      case TelegramAuthAction.CHECK_AUTH: {
-        try {
-          const isLogin = await client.checkAuthorization();
-          event.sender.send(request.responseChannel as string, isLogin);
-        } catch (e) {
-          event.sender.send(request.responseChannel as string, formatError(e));
-        }
-
-        break;
+    if (request.action === TelegramAuthAction.CHECK_AUTH) {
+      try {
+        const isLogin = await client.checkAuthorization();
+        event.sender.send(request.responseChannel, isLogin);
+      } catch (e) {
+        event.sender.send(request.responseChannel, formatError(e));
       }
-      case TelegramAuthAction.SEND_CODE: {
-        try {
-          const result = await AuthAPI.sendCode(
-            (request.data as ISendCodeRequestData).phoneNumber
-          );
-          event.sender.send(request.responseChannel as string, result);
-        } catch (e) {
-          event.sender.send(request.responseChannel as string, formatError(e));
-        }
-        break;
+    } else if (request.action === TelegramAuthAction.SEND_CODE) {
+      const requestData = request.data as ISendCodeRequestData;
+      try {
+        const response = await AuthAPI.sendCode(requestData.phoneNumber);
+        event.sender.send(request.responseChannel, response);
+      } catch (e) {
+        event.sender.send(request.responseChannel, formatError(e));
       }
-      case TelegramAuthAction.SIGN_IN: {
-        try {
-          const result = await AuthAPI.signIn(
-            request.data as ISignInRequestData
-          );
-          event.sender.send(request.responseChannel as string, result);
-          client.session.save();
-        } catch (e) {
-          event.sender.send(request.responseChannel as string, formatError(e));
-        }
-        break;
+    } else if (request.action === TelegramAuthAction.SIGN_IN) {
+      const requestData = request.data as ISignInRequestData;
+      try {
+        const response = await AuthAPI.signIn(
+          requestData.phoneNumber,
+          requestData.phoneCodeHash,
+          requestData.phoneCode
+        );
+        event.sender.send(request.responseChannel, response);
+        client.session.save();
+      } catch (e) {
+        event.sender.send(request.responseChannel, formatError(e));
       }
-      case TelegramAuthAction.SIGN_IN_WITH_PASSWORD: {
-        try {
-          const result = await AuthAPI.signInWithPassword(
-            request.data as ISignInWithPasswordRequestData
-          );
-          event.sender.send(request.responseChannel as string, result);
-          client.session.save();
-        } catch (e) {
-          event.sender.send(request.responseChannel as string, formatError(e));
-        }
-        break;
+    } else if (request.action === TelegramAuthAction.SIGN_IN_WITH_PASSWORD) {
+      const requestData = request.data as ISignInWithPasswordRequestData;
+      try {
+        const response = await AuthAPI.signInWithPassword(requestData.password);
+        event.sender.send(request.responseChannel, response);
+        client.session.save();
+      } catch (e) {
+        event.sender.send(request.responseChannel, formatError(e));
       }
+    } else {
+      throw new Error("Action does not exist");
     }
   },
 };

@@ -1,8 +1,4 @@
 import client, { apiCredentials } from "./telegramAPI";
-import {
-  ISignInRequestData,
-  ISignInWithPasswordRequestData,
-} from "../../../src/shared/interface/gramjs/auth";
 
 const { Api } = require("telegram");
 const Password = require("telegram/Password");
@@ -24,21 +20,26 @@ export class AuthAPI {
     );
   };
 
-  static signIn = async (data: ISignInRequestData) => {
-    return await client.invoke(new Api.auth.SignIn(data));
+  static signIn = async (
+    phoneNumber: string,
+    phoneCodeHash: string,
+    phoneCode: string
+  ) => {
+    return await client.invoke(
+      new Api.auth.SignIn({ phoneNumber, phoneCodeHash, phoneCode })
+    );
   };
 
-  static signInWithPassword = async (props: ISignInWithPasswordRequestData) => {
+  static signInWithPassword = async (password: string) => {
     const passwordSrpResult = await client.invoke(
       new Api.account.GetPassword({})
     );
     const passwordSrpCheck = await Password.computeCheck(
       passwordSrpResult,
-      props.password
+      password
     );
     return await client.invoke(
       new Api.auth.CheckPassword({ password: passwordSrpCheck })
     );
   };
 }
-

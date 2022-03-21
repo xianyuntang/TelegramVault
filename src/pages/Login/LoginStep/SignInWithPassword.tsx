@@ -1,13 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Controller,
   SubmitErrorHandler,
   SubmitHandler,
   useForm,
 } from "react-hook-form";
-import { telegramService } from "../../../ipc/service/telegram";
-import { Box, Button, TextField } from "@mui/material";
+import { Box, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { LoadingButton } from "@mui/lab";
+import { databaseService, telegramService } from "../../../ipc/service";
 
 interface ISignInWithPasswordForm {
   password: string;
@@ -20,7 +21,7 @@ interface SignInWithPasswordFormProps {
 export const SignInWithPasswordForm: React.FC<SignInWithPasswordFormProps> = (
   props
 ) => {
-  // const {setPassword} = props;
+  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const { handleSubmit, control, getValues } = useForm<ISignInWithPasswordForm>(
     {
@@ -31,14 +32,15 @@ export const SignInWithPasswordForm: React.FC<SignInWithPasswordFormProps> = (
   );
 
   const onSubmit: SubmitHandler<ISignInWithPasswordForm> = async (data) => {
+    setLoading(true);
     try {
-      await telegramService.signInWithPassword({
-        password: getValues("password"),
-      });
+      await telegramService.signInWithPassword(getValues("password"));
+      await databaseService.fetchDatabase();
       navigate("/");
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
+    setLoading(false);
   };
 
   const onError: SubmitErrorHandler<ISignInWithPasswordForm> = async (
@@ -62,13 +64,17 @@ export const SignInWithPasswordForm: React.FC<SignInWithPasswordFormProps> = (
               {...field}
               label="Password"
               variant="outlined"
+              type="password"
+              disabled={loading}
               fullWidth
             />
           )}
         />
       </Box>
       <Box className="login-page__form-item">
-        <Button type="submit"> Sign In With Password</Button>
+        <LoadingButton type="submit" variant="contained" loading={loading}>
+          {"Sign In With Password"}
+        </LoadingButton>
       </Box>
     </form>
   );
