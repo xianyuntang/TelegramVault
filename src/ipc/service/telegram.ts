@@ -4,8 +4,6 @@ import {ServiceBase} from "../index";
 import {
     ISendMediaToMeResponseData,
     TelegramAction,
-    TelegramAction,
-    TelegramAction,
 } from "../../shared/interface/ipc/telegram";
 import {
     ISendCodeResponseData,
@@ -37,20 +35,13 @@ export class TelegramService extends ServiceBase {
     };
 
     public checkAuth = (): Promise<boolean> => {
-        return this.ipc.send(
-            IpcChannel.TELEGRAM_AUTH,
-            TelegramAction.CHECK_AUTH
-        );
+        return this.ipc.send(IpcChannel.TELEGRAM_AUTH, TelegramAction.CHECK_AUTH);
     };
 
     public sendCode = (phoneNumber: string): Promise<ISendCodeResponseData> => {
-        return this.ipc.send(
-            IpcChannel.TELEGRAM_AUTH,
-            TelegramAction.SEND_CODE,
-            {
-                data: {phoneNumber},
-            }
-        );
+        return this.ipc.send(IpcChannel.TELEGRAM_AUTH, TelegramAction.SEND_CODE, {
+            data: {phoneNumber},
+        });
     };
 
     public signIn = (

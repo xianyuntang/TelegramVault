@@ -3,8 +3,8 @@ import {
   IIpcRequest,
   IpcChannel,
 } from "../../../src/shared/interface/ipc";
-import { IpcMainEvent } from "electron";
-import { AuthAPI } from "../../src/apis/authAPI";
+import {IpcMainEvent} from "electron";
+import {AuthAPI} from "../../src/apis/authAPI";
 import {
   ISendCodeRequestData,
   ISignInRequestData,
@@ -16,13 +16,13 @@ import {
   ISendMediaToMeResponseData,
   TelegramAction,
 } from "../../../src/shared/interface/ipc/telegram";
-import { formatError } from "./utils";
+import {formatError} from "./utils";
 import {
   IDownloadFileRequestData,
   IDownloadFileResponseData,
 } from "../../../src/shared/interface/gramjs/file";
-import { getMessage, sendMediaToMe } from "../../src/apis/messageAPI";
-import { downloadFileFromMessage } from "../../src/apis/fileAPI";
+import {getMessage, sendMediaToMe} from "../../src/apis/messageAPI";
+import {downloadFileFromMessage} from "../../src/apis/fileAPI";
 import path = require("path");
 
 export const telegramChannel: IIpcChannel = {
@@ -51,9 +51,9 @@ export const telegramChannel: IIpcChannel = {
       const requestData = request.data as ISignInRequestData;
       try {
         const response = await AuthAPI.signIn(
-          requestData.phoneNumber,
-          requestData.phoneCodeHash,
-          requestData.phoneCode
+            requestData.phoneNumber,
+            requestData.phoneCodeHash,
+            requestData.phoneCode
         );
         event.sender.send(request.responseChannel, response);
         client.session.save();
@@ -72,8 +72,8 @@ export const telegramChannel: IIpcChannel = {
     } else if (request.action === TelegramAction.DOWNLOAD_FILE) {
       event.sender.startDrag({
         file: path.join(
-          __dirname,
-          (request.data as IDownloadFileRequestData).filename as string
+            __dirname,
+            (request.data as IDownloadFileRequestData).filename as string
         ),
         // @ts-ignore
         icon: path.join(__static, "images", "cloud-download.png"),
@@ -81,22 +81,20 @@ export const telegramChannel: IIpcChannel = {
       const requestData = request.data as IDownloadFileRequestData;
       const message = await getMessage(requestData.messageId as number);
       const response: IDownloadFileResponseData = await downloadFileFromMessage(
-        message
+          message
       );
       event.sender.send(request.responseChannel as string, response);
     } else if (!request.responseChannel) {
       request.responseChannel = `${this.getName()}_response`;
-    }
-
-    if (request.action === TelegramAction.SEND_MEDIA_TO_ME) {
+    } else if (request.action === TelegramAction.SEND_MEDIA_TO_ME) {
       const requestData = request.data as ISendMediaToMeRequestData;
 
       const message: ISendMediaToMeResponseData = await sendMediaToMe(
-        requestData.file
+          requestData.file
       );
       event.sender.send(request.responseChannel as string, message);
     } else {
-      throw new Error("Action does not exist");
+      throw new Error(`${request.action} action does not exist`);
     }
   },
 };
