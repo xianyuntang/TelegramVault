@@ -3,9 +3,9 @@ import {ServiceBase} from "../index";
 
 import {
     ISendMediaToMeResponseData,
-    TelegramAuthAction,
-    TelegramFileAction,
-    TelegramMessageAction,
+    TelegramAction,
+    TelegramAction,
+    TelegramAction,
 } from "../../shared/interface/ipc/telegram";
 import {
     ISendCodeResponseData,
@@ -18,7 +18,7 @@ export class TelegramService extends ServiceBase {
     public downloadFile = async (messageId: number, filename: string) => {
         return await this.ipc.send(
             IpcChannel.TELEGRAM_FILE,
-            TelegramFileAction.DOWNLOAD_FILE,
+            TelegramAction.DOWNLOAD_FILE,
             {
                 data: {messageId, filename},
             }
@@ -29,7 +29,7 @@ export class TelegramService extends ServiceBase {
     ): Promise<ISendMediaToMeResponseData> => {
         return this.ipc.send(
             IpcChannel.TELEGRAM_MESSAGE,
-            TelegramMessageAction.SEND_MEDIA_TO_ME,
+            TelegramAction.SEND_MEDIA_TO_ME,
             {
                 data: {file},
             }
@@ -39,14 +39,14 @@ export class TelegramService extends ServiceBase {
     public checkAuth = (): Promise<boolean> => {
         return this.ipc.send(
             IpcChannel.TELEGRAM_AUTH,
-            TelegramAuthAction.CHECK_AUTH
+            TelegramAction.CHECK_AUTH
         );
     };
 
     public sendCode = (phoneNumber: string): Promise<ISendCodeResponseData> => {
         return this.ipc.send(
             IpcChannel.TELEGRAM_AUTH,
-            TelegramAuthAction.SEND_CODE,
+            TelegramAction.SEND_CODE,
             {
                 data: {phoneNumber},
             }
@@ -58,7 +58,7 @@ export class TelegramService extends ServiceBase {
         phoneCodeHash: string,
         phoneCode: string
     ): Promise<ISignInResponseData> => {
-        return this.ipc.send(IpcChannel.TELEGRAM_AUTH, TelegramAuthAction.SIGN_IN, {
+        return this.ipc.send(IpcChannel.TELEGRAM_AUTH, TelegramAction.SIGN_IN, {
             data: {phoneNumber, phoneCodeHash, phoneCode},
         });
     };
@@ -68,7 +68,7 @@ export class TelegramService extends ServiceBase {
     ): Promise<ISignInWithPasswordRequestData> => {
         return this.ipc.send(
             IpcChannel.TELEGRAM_AUTH,
-            TelegramAuthAction.SIGN_IN_WITH_PASSWORD,
+            TelegramAction.SIGN_IN_WITH_PASSWORD,
             {
                 data: {password},
             }
